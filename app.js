@@ -26,7 +26,7 @@ mongoose.connect(MONGODB_URI)
 
 app.use(cors())
 app.use(express.json())
-app.use(express.static('build'))
+// app.use(express.static('build'))
 app.use(requestLogger)
 
 // Routes and middlewares
