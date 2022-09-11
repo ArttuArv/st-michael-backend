@@ -1,5 +1,5 @@
 const Whisky = require('../models/whisky');
-const WhiskyAreas = require('../models/whiskyAreas');
+const WhiskyAreas = require('../models/whiskyareas');
 const whiskyRouter = require('express').Router();
 
 whiskyRouter.get('/', async (request, response) => {
