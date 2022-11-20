@@ -23,6 +23,23 @@ openingHoursRouter.post('/', async (request, response) => {
   response.status(201).json(savedOpeningHour)
 })
 
+openingHoursRouter.put('/:id', async (request, response) => {
+  const { day, openinghours } = request.body
+
+  if (!request.user) {
+    return response.status(401).json({ error: 'Token missing or invalid' })
+  }
+
+  const openingHour = {
+    day,
+    openinghours,
+  }
+
+  const updatedOpeningHour = await OpeningHours.findByIdAndUpdate(request.params.id, openingHour, { new: true })
+
+  response.status(201).json(updatedOpeningHour)
+})
+
 openingHoursRouter.delete('/:id', async (request, response) => {
   const hoursToDelete = await OpeningHours.findById(request.params.id)
 

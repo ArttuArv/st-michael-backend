@@ -1,22 +1,27 @@
 {
   "files": {
-    "main.css": "/static/css/main.791c63bc.css",
-    "main.js": "/static/js/main.ae8df0c0.js",
+    "main.css": "/static/css/main.ad211d0c.css",
+    "main.js": "/static/js/main.b602adbe.js",
     "static/media/guinness.mp4": "/static/media/guinness.d70aea40454ac4f6cd82.mp4",
     "static/media/kuva2.png": "/static/media/kuva2.75c91841eb9f2aabce49.png",
     "static/media/kuva3.png": "/static/media/kuva3.d07e3817d96e41d6706e.png",
     "static/media/kuva4.png": "/static/media/kuva4.e544e3f6963022ba438b.png",
     "static/media/kuva1.png": "/static/media/kuva1.b26755e3f45e1804f9e5.png",
     "static/media/Michael-logorigin.png": "/static/media/Michael-logorigin.dc273d051153cd66e62a.png",
+    "static/media/Liiga_logo.svg.png": "/static/media/Liiga_logo.svg.5fec64b4a159f4f157f3.png",
+    "static/media/Vsport1_Suomi_Vert_RGB_pos.png": "/static/media/Vsport1_Suomi_Vert_RGB_pos.b6587a43ebb882c7e937.png",
     "static/media/st-michael-tunnelmakuva.jpg": "/static/media/st-michael-tunnelmakuva.71010c32349aaee4ef6f.jpg",
+    "static/media/Oulun_Kärpät_logo.png": "/static/media/Oulun_Kärpät_logo.26700693710ec8699bf0.png",
     "static/media/michael-logo-nelio.png": "/static/media/michael-logo-nelio.703f7c5e241768e4c7bf.png",
+    "static/media/Premier_League-Logo.wine.svg": "/static/media/Premier_League-Logo.wine.b0b6bf9fe06c2ddc7b95facd3fada94c.svg",
     "static/media/story.txt": "/static/media/story.cf40cb3def1bf488494d.txt",
+    "static/media/F1.svg": "/static/media/F1.c859f588ed80c4aba1be932cf608ddc9.svg",
     "index.html": "/index.html",
-    "main.791c63bc.css.map": "/static/css/main.791c63bc.css.map",
-    "main.ae8df0c0.js.map": "/static/js/main.ae8df0c0.js.map"
+    "main.ad211d0c.css.map": "/static/css/main.ad211d0c.css.map",
+    "main.b602adbe.js.map": "/static/js/main.b602adbe.js.map"
   },
   "entrypoints": [
-    "static/css/main.791c63bc.css",
-    "static/js/main.ae8df0c0.js"
+    "static/css/main.ad211d0c.css",
+    "static/js/main.b602adbe.js"
   ]
 }
