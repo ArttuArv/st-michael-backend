@@ -1,0 +1,13 @@
+Lue dockerista www.docker.com
+ja podmanista 
+
+javalla ja mavenilla
+
+
+integraatio-palvelimet:
+esb-dev (kehitysympäristö)
+ebs-qa (QA/testi ympäristö)
+esb (Tuotantoympäristö)
+
+.\tempadmin
+ycppvjxzaZ4+

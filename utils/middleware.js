@@ -2,8 +2,6 @@ const logger = require('./logger')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-const User = require('../models/user')
-
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
   logger.info('Path:  ', request.path)
@@ -42,7 +40,7 @@ const generateToken = (user) => {
   return jwt.sign(
     userForToken,
     process.env.SECRET,
-    { expiresIn: '30min' })
+    { expiresIn: '1min' })
 }
 
 const tokenExtractor = (request, response, next) => {
@@ -66,6 +64,8 @@ const userExtractor = (request, response, next) => {
   }
   next()
 }
+
+
 
 module.exports = {
   requestLogger,
