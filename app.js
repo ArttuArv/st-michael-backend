@@ -39,7 +39,7 @@ app.use('/api/login', loginRouter)
 app.use('/api/users', usersRouter)
 
 // csv upload alkuun tähän testiksi
-app.use('/api/csv', whiskyCsvRouter)
+app.use('/api/csv', errorHandler, whiskyCsvRouter)
 
 app.use(tokenExtractor)
 app.use(userExtractor)
