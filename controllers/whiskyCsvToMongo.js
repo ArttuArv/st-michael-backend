@@ -4,7 +4,6 @@ const whiskyCsvRouter = require('express').Router()
 const csv = require('csvtojson')
 const multer = require('multer')
 const path = require('path')
-const { errorHandler } = require('../utils/middleware')
 const { 
   truncateWhiskyCollections, 
   createWhiskyAreaIfNotExists, 
@@ -32,28 +31,43 @@ whiskyCsvRouter.post('/', upload.single('csvfile'), async (req, res) => {
   console.log("PATH: ", req.file?.path)
   const csvFile = req.file.path
 
-  // Muista laittaa tokenihommat tänne
 
-  // Truncate the Whisky collection
+  if (!req.user) {
+    return res.status(401).json({ error: 'token missing or invalid' })
+  }
+  
+
   truncateWhiskyCollections()
 
   csv(
     {
       noheader: false,
       headers: ['name', 'area', 'price'],
+      quote: '"',
       delimiter: ';',
       ignoreEmpty: true,
     })
     .fromFile(csvFile)
-    .then((response) => {
+    .then(async (response) => {
 
-      createWhiskyAreaIfNotExists(response)
-
+      const whiskyAreaCount = createWhiskyAreaIfNotExists(response)
       const whiskiesByArea = createWhiskyObjectsSeparatedByArea(response)
+
+      console.log("whiskyAreaCount: ", whiskyAreaCount)
+
+      let whiskyAreaCountInDb = 0
+
+      while (whiskyAreaCountInDb < whiskyAreaCount) {
+        console.log('Waiting for whisky areas to be created...')
+        whiskyAreaCountInDb = await WhiskyAreas.find({}).populate()
+      }
 
       insertWhiskiesIntoDatabase(whiskiesByArea)
      
-      return res.status(200).json({ totalWhiskiesInserted: response.length, uploadedWhiskies: whiskiesByArea })
+      return res.status(200).json({ 
+        insertCount: response.length, 
+        uploadedWhiskies: whiskiesByArea 
+      })
     })
     .catch((err) => {
       return res.status(400).json({ error: 'Error parsing csv file' })

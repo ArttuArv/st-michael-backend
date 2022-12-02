@@ -15,18 +15,21 @@ const createWhiskyAreaIfNotExists = (response) => {
   const whiskyAreas = response.map((whisky) => whisky.area)
   const uniqueWhiskyAreas = [...new Set(whiskyAreas)]
 
-  // Check if whisky area exists in database and create if not
   uniqueWhiskyAreas.forEach(async (area) => {
 
     if (await WhiskyAreas.findOne({ name: area })) {
-
+      console.log('Whisky area already exists')
     } else {
+
       const whiskyAreas = new WhiskyAreas({
         name: area,
       })
+
       await whiskyAreas.save()
     }
   })
+
+  return uniqueWhiskyAreas.length
 }
 
 const createWhiskyObjectsSeparatedByArea = (response) => {
@@ -52,13 +55,21 @@ const createWhiskyObjectsSeparatedByArea = (response) => {
 }
 
 const insertWhiskiesIntoDatabase = (whiskiesByArea) => {
+
   Object.keys(whiskiesByArea).forEach(async (area) => {
     const whiskyArea = await WhiskyAreas.findOne({ name: area })
-    const whiskies = whiskiesByArea[area]
-    const savedWhiskies = await Whisky.insertMany(whiskies)
-    whiskyArea.whiskies = whiskyArea.whiskies.concat(savedWhiskies.map(whisky => whisky._id))
-    await whiskyArea.save()
+
+    if (whiskyArea) {
+      const whiskies = whiskiesByArea[area]
+      const savedWhiskies = await Whisky.insertMany(whiskies)
+      whiskyArea.whiskies = whiskyArea.whiskies.concat(savedWhiskies.map(whisky => whisky._id))
+      await whiskyArea.save()
+    } else {
+      console.log('Whisky area not found')
+    }
   })
+
+  console.log('Whiskies inserted into database')
 }
 
 module.exports = {

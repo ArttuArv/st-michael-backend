@@ -42,7 +42,7 @@ const generateToken = (user) => {
   return jwt.sign(
     userForToken,
     process.env.SECRET,
-    { expiresIn: '1min' })
+    { expiresIn: '30min' })
 }
 
 const tokenExtractor = (request, response, next) => {

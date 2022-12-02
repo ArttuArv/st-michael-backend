@@ -38,9 +38,6 @@ app.use(requestLogger)
 app.use('/api/login', loginRouter)
 app.use('/api/users', usersRouter)
 
-// csv upload alkuun tähän testiksi
-app.use('/api/csv', errorHandler, whiskyCsvRouter)
-
 app.use(tokenExtractor)
 app.use(userExtractor)
 
@@ -48,6 +45,7 @@ app.use('/api/beer', beerRouter)
 app.use('/api/categories', categoriesRouter)
 app.use('/api/whisky', whiskyRouter)
 app.use('/api/whiskyareas', whiskyAreasRouter)
+app.use('/api/csv', whiskyCsvRouter)
 app.use('/api/openinghours', openingHoursRouter)
 
 if (process.env.NODE_ENV === 'test') {
