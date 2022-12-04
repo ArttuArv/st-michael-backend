@@ -20,7 +20,7 @@ const logger = require('./utils/logger')
 const { requestLogger, unknownEndpoint, errorHandler, tokenExtractor, userExtractor } = require('./utils/middleware')
 
 
-mongoose.connect(process.env.TEST_MONGODB_URI)
+mongoose.connect(MONGODB_URI)
   .then(() => {
     logger.info('connected to MongoDB')
   })
