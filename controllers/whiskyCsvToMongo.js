@@ -8,7 +8,9 @@ const {
   truncateWhiskyCollections, 
   createWhiskyAreaIfNotExists, 
   createWhiskyObjectsSeparatedByArea, 
-  insertWhiskiesIntoDatabase } = require('../utils/csvToMongoUtils')
+  insertWhiskiesIntoDatabase,
+  deleteAllWhiskyAreasNotInCsv,
+  compareInsertedWhiskiesCountWithCsvCountUsingLoop } = require('../utils/csvToMongoUtils')
 
 // Multer and csv to mongoDB middlewares
 const storage = multer.diskStorage({
@@ -27,17 +29,14 @@ whiskyCsvRouter.post('/', upload.single('csvfile'), async (req, res) => {
   if (req.file?.path === undefined) {
     return res.status(400).json({ error: 'No file selected' })
   }
-  // const csvFilePath = path.join(__dirname, '../public/uploads/' + req.file.originalname)
-  console.log("PATH: ", req.file?.path)
+  
   const csvFile = req.file.path
-
 
   if (!req.user) {
     return res.status(401).json({ error: 'token missing or invalid' })
   }
-  
 
-  truncateWhiskyCollections()
+  truncateWhiskyCollections()  
 
   csv(
     {
@@ -53,23 +52,16 @@ whiskyCsvRouter.post('/', upload.single('csvfile'), async (req, res) => {
       const whiskyAreaCount = createWhiskyAreaIfNotExists(response)
       const whiskiesByArea = createWhiskyObjectsSeparatedByArea(response)
 
-      console.log("whiskyAreaCount: ", whiskyAreaCount)
-
-      let whiskyAreaCountInDb = 0
-
-      while (whiskyAreaCountInDb < whiskyAreaCount) {
-        console.log('Waiting for whisky areas to be created...')
-        whiskyAreaCountInDb = await WhiskyAreas.find({}).populate()
-      }
-
+      compareInsertedWhiskiesCountWithCsvCountUsingLoop(whiskyAreaCount)
+      
       insertWhiskiesIntoDatabase(whiskiesByArea)
+      deleteAllWhiskyAreasNotInCsv(whiskiesByArea)
      
-      return res.status(200).json({ 
-        insertCount: response.length, 
-        uploadedWhiskies: whiskiesByArea 
-      })
+      return res.status(200).send( response )
+
     })
     .catch((err) => {
+      console.log(err)
       return res.status(400).json({ error: 'Error parsing csv file' })
     })
 })
