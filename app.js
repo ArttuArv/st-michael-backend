@@ -3,6 +3,8 @@ require('express-async-errors')
 const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
+const path = require('path')
+
 
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
@@ -11,10 +13,12 @@ const categoriesRouter = require('./controllers/categories')
 const whiskyRouter = require('./controllers/whisky')
 const whiskyAreasRouter = require('./controllers/whiskyAreas')
 const openingHoursRouter = require('./controllers/openingHours')
+const whiskyCsvRouter = require('./controllers/whiskyCsvToMongo')
 
 const { MONGODB_URI } = require('./utils/config')
 const logger = require('./utils/logger')
 const { requestLogger, unknownEndpoint, errorHandler, tokenExtractor, userExtractor } = require('./utils/middleware')
+
 
 mongoose.connect(MONGODB_URI)
   .then(() => {
@@ -27,6 +31,7 @@ mongoose.connect(MONGODB_URI)
 app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
+app.use(express.static(path.resolve(__dirname, 'public')))
 app.use(requestLogger)
 
 // Routes and middlewares
@@ -40,6 +45,7 @@ app.use('/api/beer', beerRouter)
 app.use('/api/categories', categoriesRouter)
 app.use('/api/whisky', whiskyRouter)
 app.use('/api/whiskyareas', whiskyAreasRouter)
+app.use('/api/csv', whiskyCsvRouter)
 app.use('/api/openinghours', openingHoursRouter)
 
 if (process.env.NODE_ENV === 'test') {
@@ -47,7 +53,7 @@ if (process.env.NODE_ENV === 'test') {
   app.use('/api/testing', testingRouter)
 }
 
-// app.use(unknownEndpoint)
+app.use(unknownEndpoint)
 app.use(errorHandler)
 
 module.exports = app

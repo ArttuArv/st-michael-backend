@@ -2,8 +2,6 @@ const logger = require('./logger')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-const User = require('../models/user')
-
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
   logger.info('Path:  ', request.path)
@@ -27,6 +25,8 @@ const errorHandler = (error, request, response, next) => {
     return response.status(401).json({ error: 'invalid token' })
   } else if (error.name === 'TokenExpiredError') {
     return response.status(401).json({ error: 'token expired' })
+  } else if(error.name === 'MulterError') {
+    return response.status(400).json({ error: `error handling csv file. ${error.message}` })
   }
 
   next(error)
@@ -66,6 +66,8 @@ const userExtractor = (request, response, next) => {
   }
   next()
 }
+
+
 
 module.exports = {
   requestLogger,
