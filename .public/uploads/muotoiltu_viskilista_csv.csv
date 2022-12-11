@@ -1,11 +1,11 @@
 ﻿name;area;price
-Uutuusviski1;Uutuudet;9,40
-Uutuusviski2;Uutuudet;19,40
-Uutuusviski3;Uutuudet;29,40
-Uutuusviski4;Uu tuudet;49,40
-Uutuusviski5;Uu tuudet;59,40
-Uutuusviski6;Uu tuudet;559,40
-Uutuusviski7;Uu tuudet;6669,40
+"""Uutuusviski1""";Uutuudet;9,40
+"Uutuus""viski""2";Uutuudet;19,40
+"Uutuusviski""3""";Uutuudet;29,40
+"""Uutuus""viski""4""";Uutuudet;49,40
+;;
+;;
+;;
 ;;
 ;;
 Aberfeldy 18yo Cadenhead's;Highland;13,00
