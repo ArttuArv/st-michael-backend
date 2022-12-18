@@ -18,6 +18,9 @@ const { MONGODB_URI } = require('./utils/config')
 const logger = require('./utils/logger')
 const { requestLogger, unknownEndpoint, errorHandler, tokenExtractor, userExtractor } = require('./utils/middleware')
 
+const frontSendFile = (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
+}
 
 mongoose.connect(MONGODB_URI)
   .then(() => {
@@ -48,12 +51,24 @@ app.use('/api/csv', whiskyCsvRouter)
 app.use('/api/openinghours', openingHoursRouter)
 
 // Frontend Routes
-app.get('/')
-app.get('/login')
-app.get('/beer')
-app.get('/whisky')
-app.get('/story')
-app.get('/sports')
+app.get('/', (req, res) => {
+  frontSendFile(req, res)
+})
+app.get('/login', (req, res) => {
+  frontSendFile(req, res)
+})
+app.get('/beer', (req, res) => {
+  frontSendFile(req, res)
+})
+app.get('/whisky', (req, res) => {
+  frontSendFile(req, res)
+})
+app.get('/story', (req, res) => {
+  frontSendFile(req, res)
+})
+app.get('/sports', (req, res) => {
+  frontSendFile(req, res)
+})
 
 if (process.env.NODE_ENV === 'test') {
   const testingRouter = require('./controllers/testing')

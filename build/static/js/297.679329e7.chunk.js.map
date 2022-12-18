@@ -1,1 +1,0 @@
-{"version":3,"file":"static/js/297.679329e7.chunk.js","mappings":"yJASA,UANe,WACb,OACE,SAAC,IAAa,GAElB,C","sources":["pages/sports.js"],"sourcesContent":["import React from 'react'\r\nimport SportsSection from '../components/SportsSection'\r\n\r\nconst Sports = () => {\r\n  return (\r\n    <SportsSection />\r\n  )\r\n}\r\n\r\nexport default Sports"],"names":[],"sourceRoot":""}
