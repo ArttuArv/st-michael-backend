@@ -1,12 +1,11 @@
-# fly.toml file generated for st-michael-irish-pub on 2022-12-05T01:40:57+02:00
+# fly.toml file generated for st-michael-irish-pub-backup on 2022-12-11T20:14:54+02:00
 
-app = "st-michael-irish-pub"
+app = "st-michael-irish-pub-backup"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
 
 [env]
-  PORT = "8080"
 
 [experimental]
   allowed_public_ports = []

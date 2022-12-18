@@ -47,6 +47,14 @@ app.use('/api/whiskyareas', whiskyAreasRouter)
 app.use('/api/csv', whiskyCsvRouter)
 app.use('/api/openinghours', openingHoursRouter)
 
+// Frontend Routes
+app.get('/')
+app.get('/login')
+app.get('/beer')
+app.get('/whisky')
+app.get('/story')
+app.get('/sports')
+
 if (process.env.NODE_ENV === 'test') {
   const testingRouter = require('./controllers/testing')
   app.use('/api/testing', testingRouter)
