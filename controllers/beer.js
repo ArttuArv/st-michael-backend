@@ -14,6 +14,7 @@ beerRouter.post('/', async (request, response) => {
     return response.status(401).json({ error: 'Token missing or invalid' })
   } else {
     if (category === 'On Bottle' || category === 'On Draught' || category === 'Local Draughts' || category === 'Regular Draughts') {
+      
       const dbCategory = await Categories.findOne({ name: category })
       
       const beer = new Beer({
