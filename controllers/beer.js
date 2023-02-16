@@ -37,6 +37,31 @@ beerRouter.post('/', async (request, response) => {
   }  
 })
 
+beerRouter.put('/:id', async (request, response) => {
+  const { name, style, country, price, category } = request.body
+
+  if (!request.user)
+    return response.status(401).json({ error: 'Token missing or invalid' })
+  
+  if (category === 'On Bottle' || category === 'On Draught' || category === 'Local Draughts' || category === 'Regular Draughts') {
+    const beer = {
+      name,
+      style,
+      country,
+      price,
+      category,
+    }
+
+    const updatedBeer = await Beer.findByIdAndUpdate(request.params.id, beer, { new: true })
+
+    response.status(201).json(updatedBeer)
+
+  } else {
+    return response.status(400).json({ error: 'Category must be On Bottle, On Draught, Local Draughts or Regular Draughts' })
+  }
+  
+})
+
 beerRouter.delete('/:id', async (request, response) => {
   const beerToDelete = await Beer.findById(request.params.id)
 
