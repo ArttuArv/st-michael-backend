@@ -1,4 +1,5 @@
 const OpeningHours = require('../models/openingHours')
+const { addWhiteSpacesAroundHyphen } = require('../utils/stringManipulation')
 const openingHoursRouter = require('express').Router()
 
 openingHoursRouter.get('/', async (request, response) => {
@@ -7,11 +8,14 @@ openingHoursRouter.get('/', async (request, response) => {
 })
 
 openingHoursRouter.post('/', async (request, response) => {
-  const { day, openinghours } = request.body
+  let { day, openinghours } = request.body
 
   if (!request.user) {
     return response.status(401).json({ error: 'Token missing or invalid' })
   }
+
+  day = addWhiteSpacesAroundHyphen(day)
+  openinghours = addWhiteSpacesAroundHyphen(openinghours)
 
   const openingHour = new OpeningHours({
     day,
@@ -24,11 +28,14 @@ openingHoursRouter.post('/', async (request, response) => {
 })
 
 openingHoursRouter.put('/:id', async (request, response) => {
-  const { day, openinghours } = request.body
+  let { day, openinghours } = request.body
 
   if (!request.user) {
     return response.status(401).json({ error: 'Token missing or invalid' })
   }
+
+  day = addWhiteSpacesAroundHyphen(day)
+  openinghours = addWhiteSpacesAroundHyphen(openinghours)  
 
   const openingHour = {
     day,

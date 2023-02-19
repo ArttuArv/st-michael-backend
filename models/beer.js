@@ -21,7 +21,7 @@ const beerSchema = mongoose.Schema({
   price: {
     type: String,
     required: false,
-    minlength: 3
+    // minlength: 3
   },
   category: {
     type: String,
