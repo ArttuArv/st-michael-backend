@@ -1,15 +1,21 @@
 {
   "files": {
-    "main.css": "/static/css/main.3d545957.css",
-    "main.js": "/static/js/main.1a1e6f1a.js",
+    "main.css": "/static/css/main.7b0aef53.css",
+    "main.js": "/static/js/main.98346a3b.js",
     "static/js/978.53aefdc3.chunk.js": "/static/js/978.53aefdc3.chunk.js",
-    "static/js/647.0cc8e98d.chunk.js": "/static/js/647.0cc8e98d.chunk.js",
-    "static/js/322.7afe5ead.chunk.js": "/static/js/322.7afe5ead.chunk.js",
+    "static/js/430.06ade56b.chunk.js": "/static/js/430.06ade56b.chunk.js",
+    "static/css/954.c56610fb.chunk.css": "/static/css/954.c56610fb.chunk.css",
+    "static/js/954.133616e4.chunk.js": "/static/js/954.133616e4.chunk.js",
     "static/js/297.d315504e.chunk.js": "/static/js/297.d315504e.chunk.js",
     "static/js/484.1a347e29.chunk.js": "/static/js/484.1a347e29.chunk.js",
     "static/media/guinness.mp4": "/static/media/guinness.d70aea40454ac4f6cd82.mp4",
     "static/media/kuva3.png": "/static/media/kuva3.d07e3817d96e41d6706e.png",
     "static/media/kuva4.png": "/static/media/kuva4.e544e3f6963022ba438b.png",
+    "static/media/kuva7.jpg": "/static/media/kuva7.1be793fe3e71b3c8d6d9.jpg",
+    "static/media/kuva6.jpg": "/static/media/kuva6.3cd4a52347704284088b.jpg",
+    "static/media/kuva8.jpg": "/static/media/kuva8.d53e6e2c7dcafdb2c34c.jpg",
+    "static/media/kuva5.jpg": "/static/media/kuva5.3c46f86907fdacb25060.jpg",
+    "static/media/kuva1.png": "/static/media/kuva1.b26755e3f45e1804f9e5.png",
     "static/media/kuva2.jpg": "/static/media/kuva2.40c7537662af4846dd2e.jpg",
     "static/media/Michael-logorigin.png": "/static/media/Michael-logorigin.dc273d051153cd66e62a.png",
     "static/media/Liiga_logo.svg.png": "/static/media/Liiga_logo.svg.5fec64b4a159f4f157f3.png",
@@ -18,19 +24,20 @@
     "static/media/michael-logo-nelio.png": "/static/media/michael-logo-nelio.703f7c5e241768e4c7bf.png",
     "static/media/vsport_logo_pos.png": "/static/media/vsport_logo_pos.31a1bbc2d39aaecaf252.png",
     "static/media/Premier_League-Logo.wine.svg": "/static/media/Premier_League-Logo.wine.b0b6bf9fe06c2ddc7b95facd3fada94c.svg",
-    "static/media/story.txt": "/static/media/story.cf40cb3def1bf488494d.txt",
     "static/media/F1.svg": "/static/media/F1.c859f588ed80c4aba1be932cf608ddc9.svg",
+    "static/media/story.txt": "/static/media/story.97547ff9d4d491f3556e.txt",
     "index.html": "/index.html",
-    "main.3d545957.css.map": "/static/css/main.3d545957.css.map",
-    "main.1a1e6f1a.js.map": "/static/js/main.1a1e6f1a.js.map",
+    "main.7b0aef53.css.map": "/static/css/main.7b0aef53.css.map",
+    "main.98346a3b.js.map": "/static/js/main.98346a3b.js.map",
     "978.53aefdc3.chunk.js.map": "/static/js/978.53aefdc3.chunk.js.map",
-    "647.0cc8e98d.chunk.js.map": "/static/js/647.0cc8e98d.chunk.js.map",
-    "322.7afe5ead.chunk.js.map": "/static/js/322.7afe5ead.chunk.js.map",
+    "430.06ade56b.chunk.js.map": "/static/js/430.06ade56b.chunk.js.map",
+    "954.c56610fb.chunk.css.map": "/static/css/954.c56610fb.chunk.css.map",
+    "954.133616e4.chunk.js.map": "/static/js/954.133616e4.chunk.js.map",
     "297.d315504e.chunk.js.map": "/static/js/297.d315504e.chunk.js.map",
     "484.1a347e29.chunk.js.map": "/static/js/484.1a347e29.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3d545957.css",
-    "static/js/main.1a1e6f1a.js"
+    "static/css/main.7b0aef53.css",
+    "static/js/main.98346a3b.js"
   ]
 }
