@@ -16,7 +16,7 @@ const whiskyCsvRouter = require('./controllers/whiskyCsvToMongo')
 
 const { MONGODB_URI } = require('./utils/config')
 const logger = require('./utils/logger')
-const { requestLogger, unknownEndpoint, errorHandler, tokenExtractor, userExtractor } = require('./utils/middleware')
+const { requestLogger, unknownEndpoint, errorHandler, tokenExtractor, userExtractor, } = require('./utils/middleware')
 
 const frontSendFile = (req, res) => {
   res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
