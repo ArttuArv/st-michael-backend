@@ -13,6 +13,7 @@ const whiskyRouter = require('./controllers/whisky')
 const whiskyAreasRouter = require('./controllers/whiskyAreas')
 const openingHoursRouter = require('./controllers/openingHours')
 const whiskyCsvRouter = require('./controllers/whiskyCsvToMongo')
+const liveMusicRouter = require('./controllers/liveMusic')
 
 const { MONGODB_URI } = require('./utils/config')
 const logger = require('./utils/logger')
@@ -49,6 +50,7 @@ app.use('/api/whisky', whiskyRouter)
 app.use('/api/whiskyareas', whiskyAreasRouter)
 app.use('/api/csv', whiskyCsvRouter)
 app.use('/api/openinghours', openingHoursRouter)
+app.use('/api/livemusic', liveMusicRouter)
 
 // Frontend Routes
 app.get('/', (req, res) => {
