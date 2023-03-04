@@ -7,6 +7,15 @@ whiskyRouter.get('/', async (request, response) => {
   response.json(whiskies)
 })
 
+whiskyRouter.get('/:id', async (request, response) => {
+  const whisky = await Whisky.findById(request.params.id)
+
+  if (!whisky)
+    response.status(404).json({ message: 'Whisky not found' })
+
+  response.json(whisky)
+})
+
 whiskyRouter.post('/', async (request, response) => {
   const { name, area, price, } = request.body
 
@@ -55,6 +64,23 @@ whiskyRouter.delete('/:id', async (request, response) => {
   } else {
     response.status(404).json({ error: 'whisky not found' })
   }
+})
+
+whiskyRouter.put('/:id', async (request, response) => {
+  const { name, area, price, } = request.body
+
+  if (!request.user)
+    return response.status(401).json({ error: 'Token missing or invalid' })
+
+  const whisky = {
+    name,
+    area,
+    price,
+  }
+
+  const updatedWhisky = await Whisky.findByIdAndUpdate(request.params.id, whisky, { new: true })
+
+  response.status(201).json(updatedWhisky)
 })
 
 module.exports = whiskyRouter
