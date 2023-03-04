@@ -15,20 +15,20 @@ beerRouter.post('/', async (request, response) => {
   } else {
     if (category === 'On Bottle' || category === 'On Draught' || category === 'Local Draughts' || category === 'Regular Draughts') {
       
-      const dbCategory = await Categories.findOne({ name: category })
+      const beerCategory = await Categories.findOne({ name: category })
       
       const beer = new Beer({
         name,
         style,
         country,
         price,
-        category: dbCategory.name,
+        category: beerCategory.name,
       })
     
       const savedBeer = await beer.save()
   
-      dbCategory.products = dbCategory.products.concat(savedBeer._id)
-      await dbCategory.save()
+      beerCategory.products = beerCategory.products.concat(savedBeer._id)
+      await beerCategory.save()
     
       response.status(201).json(savedBeer)
     } else {    
@@ -52,7 +52,9 @@ beerRouter.put('/:id', async (request, response) => {
       category,
     }
 
-    const updatedBeer = await Beer.findByIdAndUpdate(request.params.id, beer, { new: true })
+    await removeOldEntryFromCategories(request)
+
+    const updatedBeer = await updateBeerAndCategory(request, beer)
 
     response.status(201).json(updatedBeer)
 
@@ -83,4 +85,19 @@ beerRouter.delete('/:id', async (request, response) => {
 })
 
 module.exports = beerRouter;
+
+async function updateBeerAndCategory(request, beer) {
+  const newBeerCategory = await Categories.findOne({ name: beer.category })
+  const updatedBeer = await Beer.findByIdAndUpdate(request.params.id, beer, { new: true })
+  newBeerCategory.products = newBeerCategory.products.concat(updatedBeer._id)
+  await newBeerCategory.save()
+  return updatedBeer
+}
+
+async function removeOldEntryFromCategories(request) {
+  const oldBeer = await Beer.findById(request.params.id)
+  const oldBeerCategory = await Categories.findOne({ name: oldBeer.category })
+  oldBeerCategory.products = oldBeerCategory.products.filter(product => product.toString() !== oldBeer._id.toString())
+  await oldBeerCategory.save()
+}
 

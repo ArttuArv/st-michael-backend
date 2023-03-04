@@ -49,18 +49,21 @@ whiskyRouter.post('/', async (request, response) => {
 })
 
 whiskyRouter.delete('/:id', async (request, response) => {
+  
+  if (!request.user) 
+    return response.status(401).json({ error: 'Token missing or invalid' })
+
   const whiskyToDelete = await Whisky.findById(request.params.id)
 
   if (whiskyToDelete) {
-    if (request.user) {
-      await Whisky.findByIdAndRemove(request.params.id)
+    await Whisky.findByIdAndRemove(request.params.id)
 
-      const whiskyArea = await WhiskyAreas.findOne({ name: whiskyToDelete.area })
-      whiskyArea.whiskies = whiskyArea.whiskies.filter(whisky => whisky !== whiskyToDelete._id)
-      await whiskyArea.save()
+    const whiskyArea = await WhiskyAreas.findOne({ name: whiskyToDelete.area })
+    whiskyArea.whiskies = whiskyArea.whiskies.filter(whisky => whisky.toString() !== whiskyToDelete._id.toString())
+    await whiskyArea.save()
 
-      response.status(204).end()
-    }
+    response.status(201).json({ message: `Whisky ${whiskyToDelete.name} deleted` })
+    
   } else {
     response.status(404).json({ error: 'whisky not found' })
   }
@@ -78,9 +81,30 @@ whiskyRouter.put('/:id', async (request, response) => {
     price,
   }
 
-  const updatedWhisky = await Whisky.findByIdAndUpdate(request.params.id, whisky, { new: true })
+  await removeOldEntryFromWhiskyAreas(request)
+
+  const updatedWhisky = await updateWhiskyAndWhiskyArea(whisky, request)  
 
   response.status(201).json(updatedWhisky)
 })
 
 module.exports = whiskyRouter
+
+async function updateWhiskyAndWhiskyArea(whisky, request) {
+  const updatedWhiskyArea = await WhiskyAreas.findOne({ name: whisky.area })
+  const updatedWhisky = await Whisky.findByIdAndUpdate(request.params.id, whisky, { new: true })
+  updatedWhiskyArea.whiskies = updatedWhiskyArea.whiskies.concat(updatedWhisky._id)
+
+  await updatedWhiskyArea.save()
+
+  return updatedWhisky
+}
+
+async function removeOldEntryFromWhiskyAreas(request) {
+
+  const oldWhisky = await Whisky.findById(request.params.id)  
+  const oldWhiskyArea = await WhiskyAreas.findOne({ name: oldWhisky.area })  
+  oldWhiskyArea.whiskies = oldWhiskyArea.whiskies.filter(whisky => whisky.toString() !== oldWhisky._id.toString())
+
+  await oldWhiskyArea.save()
+}
