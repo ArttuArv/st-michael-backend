@@ -9,9 +9,8 @@ categoriesRouter.get('/', async (request, response) => {
 categoriesRouter.post('/', async (request, response) => {
   const { name, } = request.body
 
-  if (!request.user) {
+  if (!request.user)
     return response.status(401).json({ error: 'Token missing or invalid' })
-  }
 
   const categories = new Categories({
     name,
@@ -25,13 +24,12 @@ categoriesRouter.post('/', async (request, response) => {
 categoriesRouter.delete('/:id', async (request, response) => {
   const categoriesToDelete = await Categories.findById(request.params.id)
 
+  if (!request.user)
+    return response.status(401).json({ error: 'Token missing or invalid' })
+    
   if (categoriesToDelete) {
-    if (request.user) {
-      await Categories.findByIdAndRemove(request.params.id)
-      response.status(204).end()
-    } else {
-      response.status(401).json({ error: 'Token missing or invalid' })
-    }
+    await Categories.findByIdAndRemove(request.params.id)
+    response.status(204).end()
   } else {
     response.status(404).json({ error: 'category not found' })
   }

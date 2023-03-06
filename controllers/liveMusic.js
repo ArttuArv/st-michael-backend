@@ -12,7 +12,6 @@ liveMusicRouter.post('/', async (request, response) => {
   if (!request.user)
     return response.status(401).json({ error: 'Token missing or invalid' })
   
-
   const liveMusic = new LiveMusic({
     name,
     date,

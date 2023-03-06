@@ -40,4 +40,36 @@ usersRouter.post('/', async (request, response) => {
   response.status(201).json(savedUser)
 })
 
+usersRouter.put('/:id', async (request, response) => {
+  const { username, name, password } = request.body
+
+  if (!request.user) {
+    return response.status(401).json({ error: 'Token missing or invalid' })
+  }
+
+  const saltRounds = 10
+  const passwordHash = await bcrypt.hash(password, saltRounds)
+
+  const user = {
+    username,
+    name,
+    passwordHash,
+  }
+
+  const updatedUser = await user.findByIdAndUpdate(request.params.id, user, { new: true })
+
+  response.status(201).json(updatedUser)
+})
+
+usersRouter.delete('/:id', async (request, response) => {
+
+  if (!request.user) {
+    return response.status(401).json({ error: 'Token missing or invalid' })
+  }
+
+  User.findByIdAndRemove(request.params.id)
+
+  response.status(204).end()
+})
+
 module.exports = usersRouter
