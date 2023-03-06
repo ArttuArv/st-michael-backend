@@ -98,8 +98,6 @@ const compareInsertedWhiskiesCountWithCsvCountUsingLoop = async (csv) => {
   }
 }
 
-
-
 module.exports = {
   truncateWhiskyCollections,
   createWhiskyAreaIfNotExists,
