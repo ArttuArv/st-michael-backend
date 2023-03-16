@@ -48,18 +48,18 @@ openingHoursRouter.put('/:id', async (request, response) => {
 })
 
 openingHoursRouter.delete('/:id', async (request, response) => {
+
   const hoursToDelete = await OpeningHours.findById(request.params.id)
 
-  if (!hoursToDelete) {
+  if (!hoursToDelete)
     return response.status(404).json({ error: 'opening hours not found' })
-  } else {
-    if (request.user) {
-      await OpeningHours.findByIdAndRemove(request.params.id)
-      response.status(204).end()
-    } else {
-      response.status(401).json({ error: 'Token missing or invalid' })
-    }    
-  }  
+  
+  if (!request.user) 
+    return response.status(401).json({ error: 'Token missing or invalid' })
+
+  await OpeningHours.findByIdAndRemove(request.params.id)
+  response.status(204).end()
+    
 })
 
 module.exports = openingHoursRouter

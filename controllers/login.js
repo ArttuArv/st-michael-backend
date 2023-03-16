@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const loginRouter = require('express').Router()
 const User = require('../models/user')
-const { generateToken } = require('../utils/middleware')
+const { generateAccessToken, generateRefreshToken, } = require('../utils/middleware')
 
 loginRouter.post('/', async (request, response) => {
   const { username, password } = request.body
@@ -17,9 +18,39 @@ loginRouter.post('/', async (request, response) => {
     })
   }
 
-  const token = generateToken(user)
+  const token = generateAccessToken(user)
 
-  response.status(200).send({ token, username: user.username, name: user.name })
+  const refreshToken = generateRefreshToken(user)
+
+  response.status(200).send({ access: token, refresh: refreshToken, name: user.name })
 })
+
+// loginRouter.post('/refresh', async (request, response) => {
+
+//   const { token } = request.body
+
+//   console.log('token: ', token)
+
+//   if (!token) {
+//     return response.status(401).json({
+//       error: 'token missing'
+//     })
+//   }
+
+//   const decodedToken = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
+
+//   if (!decodedToken) {
+//     return response.status(401).json({
+//       error: 'invalid token'
+//     })
+//   }
+
+//   const user = await User.findById(decodedToken.id)
+
+//   const newToken = generateAccessToken(user)
+
+//   response.status(200).send({ access: newToken })
+
+// })
 
 module.exports = loginRouter

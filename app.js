@@ -35,12 +35,13 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
 app.use(express.static(path.resolve(__dirname, 'public')))
-app.use(requestLogger)
+
 
 // Routes and middlewares
 app.use('/api/login', loginRouter)
 app.use('/api/users', usersRouter)
 
+app.use(requestLogger)
 app.use(tokenExtractor)
 app.use(userExtractor)
 

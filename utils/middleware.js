@@ -33,7 +33,7 @@ const errorHandler = (error, request, response, next) => {
 }
 
 // JWT generator and middlewares
-const generateToken = (user) => {
+const generateAccessToken = (user) => {
   const userForToken = {
     username: user.username,
     id: user._id,
@@ -41,9 +41,25 @@ const generateToken = (user) => {
 
   return jwt.sign(
     userForToken,
-    process.env.SECRET,
+    process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: '45min' })
 }
+
+const generateRefreshToken = (user) => {
+
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  }
+
+  const refreshToken = jwt.sign(
+    userForToken,
+    process.env.REFRESH_TOKEN_SECRET,
+    { expiresIn: '7d' }
+  );
+
+  return refreshToken;
+};
 
 const tokenExtractor = (request, response, next) => {
   const authorization = request.get('authorization')
@@ -57,7 +73,7 @@ const tokenExtractor = (request, response, next) => {
 
 const userExtractor = (request, response, next) => {
   if (request.token) {
-    jwt.verify(request.token, process.env.SECRET, (error, decoded) => {
+    jwt.verify(request.token, process.env.ACCESS_TOKEN_SECRET, (error, decoded) => {
       if (error) {
         return response.status(401).json({ error: 'invalid token' })
       } else {
@@ -73,7 +89,8 @@ module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  generateToken,
+  generateAccessToken,
+  generateRefreshToken,
   tokenExtractor,
   userExtractor,
 }

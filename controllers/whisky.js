@@ -3,7 +3,10 @@ const WhiskyAreas = require('../models/whiskyareas')
 const whiskyRouter = require('express').Router()
 
 whiskyRouter.get('/', async (request, response) => {
-  const whiskies = await Whisky.find({}).populate()
+  const whiskies = (typeof Whisky.find({}).populate().then == 'function') 
+    ? await Whisky.find({}).populate() 
+    : Whisky.find({}).populate()
+    
   response.json(whiskies)
 })
 
@@ -81,14 +84,14 @@ whiskyRouter.put('/:id', async (request, response) => {
     price,
   }
 
-  const existingWhisky = await Whisky.findOne({ name: whisky.name })
+  const existingWhisky = await Whisky.findById(request.params.id)
 
   if (whisky.name === existingWhisky.name)
     response.status(400).json({ message: 'Whisky already exists'})
 
-  await removeOldEntryFromWhiskyAreas(request)
+  await removeOldEntryFromWhiskyAreas(existingWhisky)
 
-  const updatedWhisky = await updateWhiskyAndWhiskyArea(whisky, request)  
+  const updatedWhisky = await updateWhiskyAndWhiskyArea(whisky, request) 
 
   response.status(201).json(updatedWhisky)
 })
@@ -105,9 +108,8 @@ async function updateWhiskyAndWhiskyArea(whisky, request) {
   return updatedWhisky
 }
 
-async function removeOldEntryFromWhiskyAreas(request) {
+async function removeOldEntryFromWhiskyAreas(oldWhisky) {
 
-  const oldWhisky = await Whisky.findById(request.params.id)  
   const oldWhiskyArea = await WhiskyAreas.findOne({ name: oldWhisky.area })  
   oldWhiskyArea.whiskies = oldWhiskyArea.whiskies.filter(whisky => whisky.toString() !== oldWhisky._id.toString())
 
