@@ -39,12 +39,12 @@ app.use(express.static(path.resolve(__dirname, 'public')))
 
 // Routes and middlewares
 app.use('/api/login', loginRouter)
-app.use('/api/users', usersRouter)
 
 app.use(requestLogger)
 app.use(tokenExtractor)
 app.use(userExtractor)
 
+app.use('/api/users', usersRouter)
 app.use('/api/beer', beerRouter)
 app.use('/api/categories', categoriesRouter)
 app.use('/api/whisky', whiskyRouter)

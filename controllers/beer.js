@@ -13,7 +13,7 @@ beerRouter.post('/', async (request, response) => {
   if (!request.user) 
     return response.status(401).json({ error: 'Token missing or invalid' })
   
-  if (category === 'On Bottle' || category === 'On Draught' || category === 'Local Draughts' || category === 'Regular Draughts') {
+  if (category === 'Seasonal Bottles' || category === 'Seasonal Draughts' || category === 'Regular Bottles' || category === 'Regular Draughts') {
       
     const beerCategory = await Categories.findOne({ name: category })
     
@@ -33,7 +33,7 @@ beerRouter.post('/', async (request, response) => {
     response.status(201).json(savedBeer)
     
   } else {    
-    return response.status(400).json({ error: 'Category must be On Bottle, On Draught, Local Draughts or Regular Draughts' })
+    return response.status(400).json({ error: 'Category must be Seasonal Bottles, Seasonal Draughts, Regular Bottles or Regular Draughts' })
   }  
 })
 
@@ -43,7 +43,7 @@ beerRouter.put('/:id', async (request, response) => {
   if (!request.user)
     return response.status(401).json({ error: 'Token missing or invalid' })
   
-  if (category === 'On Bottle' || category === 'On Draught' || category === 'Local Draughts' || category === 'Regular Draughts') {
+  if (category === 'Seasonal Bottles' || category === 'Seasonal Draughts' || category === 'Regular Bottles' || category === 'Regular Draughts') {
     const beer = {
       name,
       style,
@@ -59,7 +59,7 @@ beerRouter.put('/:id', async (request, response) => {
     response.status(201).json(updatedBeer)
 
   } else {
-    return response.status(400).json({ error: 'Category must be On Bottle, On Draught, Local Draughts or Regular Draughts' })
+    return response.status(400).json({ error: 'Category must be Seasonal Bottles, Seasonal Draughts, Regular Bottles or Regular Draughts' })
   }
   
 })

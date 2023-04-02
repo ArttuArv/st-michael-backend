@@ -16,9 +16,9 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
-  if (!request.user) {
+  if (!request.user)
     return response.status(401).json({ error: 'Token missing or invalid' })
-  }
+  
 
   const existingUser = await User.findOne({ username })
 
@@ -41,7 +41,11 @@ usersRouter.post('/', async (request, response) => {
 })
 
 usersRouter.put('/:id', async (request, response) => {
-  const { username, name, password } = request.body
+  const { username, password } = request.body
+  const { id } = request.params
+  
+  console.log('Body: ', request.body)
+  console.log('request.user: ', request.user)
 
   if (!request.user) {
     return response.status(401).json({ error: 'Token missing or invalid' })
@@ -52,11 +56,10 @@ usersRouter.put('/:id', async (request, response) => {
 
   const user = {
     username,
-    name,
     passwordHash,
   }
 
-  const updatedUser = await user.findByIdAndUpdate(request.params.id, user, { new: true })
+  const updatedUser = await User.findByIdAndUpdate(id, user, { new: true })
 
   response.status(201).json(updatedUser)
 })

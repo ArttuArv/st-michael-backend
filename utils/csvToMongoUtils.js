@@ -1,12 +1,22 @@
 const Whisky = require('../models/whisky')
 const WhiskyAreas = require('../models/whiskyareas')
 
-const truncateWhiskyCollections = () => {
+const truncateWhiskyCollections = async () => {
   Whisky.deleteMany({}, (err) => {
     if (err) {
       console.log(err)
     } else {
       console.log('Whisky Collection truncated')
+    }
+  })
+}
+
+const truncateWhiskyAreasCollection = async () => {
+  WhiskyAreas.deleteMany({}, (err) => {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log('Whisky Areas Collection truncated')
     }
   })
 }
@@ -25,6 +35,7 @@ const createWhiskyAreaIfNotExists = (response) => {
         name: area,
       })
 
+      console.log(`Whisky area ${area} created`)
       await whiskyAreas.save()
     }
   })
@@ -92,14 +103,20 @@ const deleteAllWhiskyAreasNotInCsv = async (whiskyCsv) => {
 
 const compareInsertedWhiskiesCountWithCsvCountUsingLoop = async (csv) => {
   let whiskyAreaCountInDb = 0
+  console.log('CSV COUNT: ', csv)
   while (whiskyAreaCountInDb < csv) {
     console.log('Waiting for whisky areas to be created...')
     whiskyAreaCountInDb = await WhiskyAreas.find({}).populate()
   }
+
+  console.log('WHISKY AREA COUNT: ', whiskyAreaCountInDb.length)
+
+  return whiskyAreaCountInDb.length
 }
 
 module.exports = {
   truncateWhiskyCollections,
+  truncateWhiskyAreasCollection,
   createWhiskyAreaIfNotExists,
   createWhiskyObjectsSeparatedByArea,
   insertWhiskiesIntoDatabase,

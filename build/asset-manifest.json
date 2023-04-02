@@ -1,11 +1,11 @@
 {
   "files": {
-    "main.css": "/static/css/main.f5eeb7a6.css",
-    "main.js": "/static/js/main.1b630a48.js",
-    "static/js/978.53aefdc3.chunk.js": "/static/js/978.53aefdc3.chunk.js",
-    "static/js/732.18043dd1.chunk.js": "/static/js/732.18043dd1.chunk.js",
-    "static/css/954.204c4260.chunk.css": "/static/css/954.204c4260.chunk.css",
-    "static/js/954.133616e4.chunk.js": "/static/js/954.133616e4.chunk.js",
+    "main.css": "/static/css/main.9306c36f.css",
+    "main.js": "/static/js/main.19c5b249.js",
+    "static/js/978.19fc2c01.chunk.js": "/static/js/978.19fc2c01.chunk.js",
+    "static/js/283.a998c305.chunk.js": "/static/js/283.a998c305.chunk.js",
+    "static/css/954.42f96dff.chunk.css": "/static/css/954.42f96dff.chunk.css",
+    "static/js/954.684219a5.chunk.js": "/static/js/954.684219a5.chunk.js",
     "static/js/484.1a347e29.chunk.js": "/static/js/484.1a347e29.chunk.js",
     "static/media/guinness.mp4": "/static/media/guinness.d70aea40454ac4f6cd82.mp4",
     "static/media/kuva3.png": "/static/media/kuva3.d07e3817d96e41d6706e.png",
@@ -18,7 +18,9 @@
     "static/media/kuva2.jpg": "/static/media/kuva2.40c7537662af4846dd2e.jpg",
     "static/media/Michael-logorigin.png": "/static/media/Michael-logorigin.dc273d051153cd66e62a.png",
     "static/media/Liiga_logo.svg.png": "/static/media/Liiga_logo.svg.5fec64b4a159f4f157f3.png",
+    "static/media/Michael-logo-green-glow.png": "/static/media/Michael-logo-green-glow.3796d85d04bcb271bae3.png",
     "static/media/st-michael-tunnelmakuva.jpg": "/static/media/st-michael-tunnelmakuva.71010c32349aaee4ef6f.jpg",
+    "static/media/stMichael_kartta_brass.svg": "/static/media/stMichael_kartta_brass.5f67f1618fd733eb891360a836335d93.svg",
     "static/media/Oulun_Kärpät_logo.png": "/static/media/Oulun_Kärpät_logo.26700693710ec8699bf0.png",
     "static/media/michael-logo-nelio.png": "/static/media/michael-logo-nelio.703f7c5e241768e4c7bf.png",
     "static/media/vsport_logo_pos.png": "/static/media/vsport_logo_pos.31a1bbc2d39aaecaf252.png",
@@ -26,16 +28,16 @@
     "static/media/F1.svg": "/static/media/F1.c859f588ed80c4aba1be932cf608ddc9.svg",
     "static/media/story.txt": "/static/media/story.97547ff9d4d491f3556e.txt",
     "index.html": "/index.html",
-    "main.f5eeb7a6.css.map": "/static/css/main.f5eeb7a6.css.map",
-    "main.1b630a48.js.map": "/static/js/main.1b630a48.js.map",
-    "978.53aefdc3.chunk.js.map": "/static/js/978.53aefdc3.chunk.js.map",
-    "732.18043dd1.chunk.js.map": "/static/js/732.18043dd1.chunk.js.map",
-    "954.204c4260.chunk.css.map": "/static/css/954.204c4260.chunk.css.map",
-    "954.133616e4.chunk.js.map": "/static/js/954.133616e4.chunk.js.map",
+    "main.9306c36f.css.map": "/static/css/main.9306c36f.css.map",
+    "main.19c5b249.js.map": "/static/js/main.19c5b249.js.map",
+    "978.19fc2c01.chunk.js.map": "/static/js/978.19fc2c01.chunk.js.map",
+    "283.a998c305.chunk.js.map": "/static/js/283.a998c305.chunk.js.map",
+    "954.42f96dff.chunk.css.map": "/static/css/954.42f96dff.chunk.css.map",
+    "954.684219a5.chunk.js.map": "/static/js/954.684219a5.chunk.js.map",
     "484.1a347e29.chunk.js.map": "/static/js/484.1a347e29.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f5eeb7a6.css",
-    "static/js/main.1b630a48.js"
+    "static/css/main.9306c36f.css",
+    "static/js/main.19c5b249.js"
   ]
 }

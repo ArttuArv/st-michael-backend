@@ -1,16 +1,16 @@
-const Whisky = require('../models/whisky')
-const WhiskyAreas = require('../models/whiskyareas')
 const whiskyCsvRouter = require('express').Router()
 const csv = require('csvtojson')
 const multer = require('multer')
 const path = require('path')
+const fs = require('fs')
 const { 
   truncateWhiskyCollections, 
+  truncateWhiskyAreasCollection,
   createWhiskyAreaIfNotExists, 
   createWhiskyObjectsSeparatedByArea, 
   insertWhiskiesIntoDatabase,
   deleteAllWhiskyAreasNotInCsv,
-  compareInsertedWhiskiesCountWithCsvCountUsingLoop } = require('../utils/csvToMongoUtils')
+} = require('../utils/csvToMongoUtils')
 
 // Multer and csv to mongoDB middlewares
 const storage = multer.diskStorage({
@@ -36,35 +36,46 @@ whiskyCsvRouter.post('/', upload.single('csvfile'), async (req, res) => {
     return res.status(401).json({ error: 'token missing or invalid' })
   }
 
-  truncateWhiskyCollections()  
+  truncateWhiskyCollections()
+    .then(() => truncateWhiskyAreasCollection())
+    .then(() =>
+      csv(
+      {
+        noheader: false,
+        headers: ['name', 'area', 'price'],
+        quote: '"',
+        delimiter: ';',
+        ignoreEmpty: true,
+      })
+      .fromFile(csvFile)
+      .then(async (response) => {
 
-  csv(
-    {
-      noheader: false,
-      headers: ['name', 'area', 'price'],
-      quote: '"',
-      delimiter: ';',
-      ignoreEmpty: true,
-    })
-    .fromFile(csvFile)
-    .then(async (response) => {
+        const whiskyAreaCount = createWhiskyAreaIfNotExists(response)
 
-      const whiskyAreaCount = createWhiskyAreaIfNotExists(response)
-      const whiskiesByArea = createWhiskyObjectsSeparatedByArea(response)
+        setTimeout(() => {
+          const whiskiesByArea = createWhiskyObjectsSeparatedByArea(response)      
+          insertWhiskiesIntoDatabase(whiskiesByArea)
+          deleteAllWhiskyAreasNotInCsv(whiskiesByArea)
 
-      compareInsertedWhiskiesCountWithCsvCountUsingLoop(whiskyAreaCount)
-      
-      insertWhiskiesIntoDatabase(whiskiesByArea)
-      deleteAllWhiskyAreasNotInCsv(whiskiesByArea)
-     
-      return res.status(200).send( response )
+          return res.status(200).send( response )    
 
-    })
-    .catch((err) => {
-      console.log(err)
-      return res.status(400).json({ error: 'Error parsing csv file' })
-    })
+        }, 1000)
+
+      })
+      .then(() => removeFileFromDisk(csvFile))
+      .catch((err) => {
+        console.log(err)
+        return res.status(400).json({ error: 'Error parsing csv file' })
+      })    
+    )
 })
 
 
 module.exports = whiskyCsvRouter
+
+function removeFileFromDisk(csvFile) {
+  fs.unlink(csvFile, (err) => {
+    if (err)
+      console.error(err)
+  })
+}
