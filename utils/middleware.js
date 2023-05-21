@@ -1,6 +1,16 @@
 const logger = require('./logger')
 const jwt = require('jsonwebtoken')
+const allowedOrigins = require('./allowedOrigins')
 require('dotenv').config()
+
+const credentials = (request, response, next) => {
+  const origin = request.headers.origin
+
+  if (allowedOrigins.includes(origin)) {
+    response.header('Access-Control-Allow-Credentials', true)
+  }
+  next()
+}
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -42,7 +52,7 @@ const generateAccessToken = (user) => {
   return jwt.sign(
     userForToken,
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: '45min' })
+    { expiresIn: '15min' })
 }
 
 const generateRefreshToken = (user) => {
@@ -84,6 +94,29 @@ const userExtractor = (request, response, next) => {
   next()
 }
 
+const verifyJWT = (request, response, next) => {
+  const authHeader = request.headers['authorization']
+
+  if (!authHeader) {
+    return response.status(401)
+  }
+
+  const token = authHeader.split(' ')[1]
+
+  if (!token) {
+    return response.status(401)
+  }
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, user) => {
+    if (error) {
+      return response.status(403)
+    }
+
+    request.user = user
+    next()
+  })
+}
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
@@ -92,4 +125,6 @@ module.exports = {
   generateRefreshToken,
   tokenExtractor,
   userExtractor,
+  verifyJWT,
+  credentials
 }

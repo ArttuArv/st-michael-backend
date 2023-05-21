@@ -4,6 +4,7 @@ const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
 const path = require('path')
+const cookieParser = require('cookie-parser')
 
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
@@ -14,10 +15,13 @@ const whiskyAreasRouter = require('./controllers/whiskyAreas')
 const openingHoursRouter = require('./controllers/openingHours')
 const whiskyCsvRouter = require('./controllers/whiskyCsvToMongo')
 const liveMusicRouter = require('./controllers/liveMusic')
+const refreshRouter = require('./controllers/refresh')
+const logoutRouter = require('./controllers/logout')
 
 const { MONGODB_URI } = require('./utils/config')
 const logger = require('./utils/logger')
-const { requestLogger, unknownEndpoint, errorHandler, tokenExtractor, userExtractor, } = require('./utils/middleware')
+const { requestLogger, unknownEndpoint, errorHandler, tokenExtractor, userExtractor, credentials, } = require('./utils/middleware')
+const corrsOptions = require('./utils/corsOptions')
 
 const frontSendFile = (req, res) => {
   res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
@@ -31,14 +35,19 @@ mongoose.connect(MONGODB_URI)
     logger.error('error connecting to MongoDB:', error.message)
   })
 
-app.use(cors())
+app.use(credentials)
+
+app.use(cors(corrsOptions))
 app.use(express.json())
+app.use(cookieParser())
 app.use(express.static('build'))
 app.use(express.static(path.resolve(__dirname, 'public')))
 
 
 // Routes and middlewares
 app.use('/api/login', loginRouter)
+app.use('/api/refresh', refreshRouter)
+app.use('/api/logout', logoutRouter)
 
 app.use(requestLogger)
 app.use(tokenExtractor)
