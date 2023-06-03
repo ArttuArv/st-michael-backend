@@ -23,12 +23,19 @@ loginRouter.post('/', async (request, response) => {
   const refreshToken = generateRefreshToken(user)
 
   // Save refresh token to database
-  await User.findByIdAndUpdate(user._id, { refreshToken: refreshToken }, { new: true })
+  await User.findByIdAndUpdate(user._id, { refreshToken: refreshToken }, { new: true }).exec()
 
-  response.cookie('refreshToken', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }) // secure: true, sameSite: 'none' for https
+  response.cookie('refreshToken', refreshToken, { 
+    httpOnly: true, 
+    maxAge: 24 * 60 * 60 * 1000, 
+    // sameSite: 'none',
+    // secure: true
+  }) // secure: true, sameSite: 'none' for https
 
-  response.status(200).send({ access: token, name: user.name })
-
+  response.status(200).send({ 
+    access: token,
+    name: user.name,
+  })
 })
 
 

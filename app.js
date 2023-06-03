@@ -2,7 +2,10 @@ const express = require('express')
 require('express-async-errors')
 const app = express()
 const cors = require('cors')
+
 const mongoose = require('mongoose')
+const { connectDB, listenApp } = require('./utils/dbConn')
+
 const path = require('path')
 const cookieParser = require('cookie-parser')
 
@@ -18,26 +21,29 @@ const liveMusicRouter = require('./controllers/liveMusic')
 const refreshRouter = require('./controllers/refresh')
 const logoutRouter = require('./controllers/logout')
 
-const { MONGODB_URI } = require('./utils/config')
+const { PORT } = require('./utils/config')
+
 const logger = require('./utils/logger')
-const { requestLogger, unknownEndpoint, errorHandler, tokenExtractor, userExtractor, credentials, } = require('./utils/middleware')
+const { 
+  requestLogger, 
+  unknownEndpoint, 
+  errorHandler, 
+  tokenExtractor, 
+  userExtractor, 
+  credentials, 
+} = require('./utils/middleware')
 const corrsOptions = require('./utils/corsOptions')
 
 const frontSendFile = (req, res) => {
   res.sendFile(path.resolve(__dirname, 'build', 'index.html'))
 }
 
-mongoose.connect(MONGODB_URI)
-  .then(() => {
-    logger.info('connected to MongoDB')
-  })
-  .catch((error) => {
-    logger.error('error connecting to MongoDB:', error.message)
-  })
+connectDB()
 
 app.use(credentials)
-
 app.use(cors(corrsOptions))
+// app.use(cors())
+
 app.use(express.json())
 app.use(cookieParser())
 app.use(express.static('build'))
@@ -69,6 +75,9 @@ app.get('/', (req, res) => {
 app.get('/login', (req, res) => {
   frontSendFile(req, res)
 })
+app.get('/admin', (req, res) => {
+  frontSendFile(req, res)
+})
 app.get('/beer', (req, res) => {
   frontSendFile(req, res)
 })
@@ -89,5 +98,7 @@ if (process.env.NODE_ENV === 'test') {
 
 app.use(unknownEndpoint)
 app.use(errorHandler)
+
+listenApp(app)
 
 module.exports = app

@@ -16,28 +16,27 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
-  if (!request.user)
-    return response.status(401).json({ error: 'Token missing or invalid' })
-  
+  if (!request.user) return response.status(401).json({ error: 'Token missing or invalid' })
 
-  const existingUser = await User.findOne({ username })
+  if (!username || !password) return response.status(400).json({ error: 'username and password required' })
 
-  if (existingUser) {
-    return response.status(400).json({ error: 'username must be unique' })
-  }
+  const existingUser = await User.findOne({ username }).exec()
+
+  if (existingUser) return response.status(409).json({ error: 'username must be unique' })  
 
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
   const user = new User({
     username,
-    name,
+    name: name === undefined ? username : (name || name === '') ? username : name,
     passwordHash,
   })
 
   const savedUser = await user.save()
 
   response.status(201).json(savedUser)
+  
 })
 
 usersRouter.put('/:id', async (request, response) => {

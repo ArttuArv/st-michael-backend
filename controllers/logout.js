@@ -6,23 +6,32 @@ logoutRouter.get('/', async (request, response) => {
 
   const cookies = request.cookies
 
-  if (!cookies?.refreshToken) {
-    return response.sendStatus(204)
-  }
+  if (!cookies?.refreshToken) 
+    return response.status(201).send({ message: 'no refresh token' })
 
   const refreshToken = cookies.refreshToken
-  const user = await User.findOne({ refreshToken: refreshToken })
+  const user = await User.findOne({ refreshToken: refreshToken }).exec()
 
   if (!user) {
-    response.clearCookie('refreshToken', { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 })
-    return response.status(204)
+    response.clearCookie('refreshToken', { 
+      httpOnly: true, 
+      // sameSite: 'none' 
+    })
+
+    return response.status(201).send({ message: 'no user found' })
   }
 
-  await User.findByIdAndUpdate(user._id, { refreshToken: null }, { new: true })
+  await User.findByIdAndUpdate(user._id, { refreshToken: null }, { new: true }).exec()
 
-  response.clearCookie('refreshToken', { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }) // secure: true, sameSite: 'none' for https
+  console.log('user found and updated')
 
-  response.status(204).send()
+  response.clearCookie('refreshToken', { 
+    httpOnly: true, 
+    // sameSite: 'none',
+    // secure: true
+  }) // secure: true, sameSite: 'none' for https
+
+  response.status(201).send({ message: 'Logged out'})
 })
 
 module.exports = logoutRouter
