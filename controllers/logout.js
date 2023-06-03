@@ -15,7 +15,8 @@ logoutRouter.get('/', async (request, response) => {
   if (!user) {
     response.clearCookie('refreshToken', { 
       httpOnly: true, 
-      // sameSite: 'none' 
+      sameSite: 'none',
+      secure: true
     })
 
     return response.status(201).send({ message: 'no user found' })
@@ -23,12 +24,10 @@ logoutRouter.get('/', async (request, response) => {
 
   await User.findByIdAndUpdate(user._id, { refreshToken: null }, { new: true }).exec()
 
-  console.log('user found and updated')
-
   response.clearCookie('refreshToken', { 
     httpOnly: true, 
-    // sameSite: 'none',
-    // secure: true
+    sameSite: 'none',
+    secure: true
   }) // secure: true, sameSite: 'none' for https
 
   response.status(201).send({ message: 'Logged out'})

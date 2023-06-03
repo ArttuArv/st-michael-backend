@@ -11,7 +11,7 @@ openingHoursRouter.post('/', async (request, response) => {
   let { day, openinghours } = request.body
 
   if (!request.user) {
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401)/* .json({ error: 'Token missing or invalid' }) */
   }
 
   day = addWhiteSpacesAroundHyphen(day)

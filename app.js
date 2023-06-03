@@ -40,9 +40,11 @@ const frontSendFile = (req, res) => {
 
 connectDB()
 
-app.use(credentials)
-app.use(cors(corrsOptions))
-// app.use(cors())
+// app.use(credentials)
+// app.use(cors(corrsOptions))
+app.use(cors({
+  origin: './build',
+}))
 
 app.use(express.json())
 app.use(cookieParser())

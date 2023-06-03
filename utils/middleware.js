@@ -16,7 +16,6 @@ const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
   logger.info('Path:  ', request.path)
   logger.info('Body:  ', request.body)
-  logger.info('Cookies: ', request.cookies === undefined ? 'none' : request.cookies)
   logger.info('DateTime: ', new Date().toLocaleString('fi-FI', { timeZone: 'Europe/Helsinki' }))
   logger.info('---')
   next()
