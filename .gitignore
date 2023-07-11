@@ -2,7 +2,6 @@
 .env
 /test
 /build
-
 Dockerfile
 .dockerignore
 node_modules

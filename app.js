@@ -40,11 +40,14 @@ const frontSendFile = (req, res) => {
 
 connectDB()
 
-// app.use(credentials)
-// app.use(cors(corrsOptions))
-app.use(cors({
-  origin: './build',
-}))
+// Dev
+app.use(credentials)
+app.use(cors(corrsOptions))
+
+// Prod
+// app.use(cors({
+//   origin: './build',
+// }))
 
 app.use(express.json())
 app.use(cookieParser())
@@ -90,6 +93,9 @@ app.get('/story', (req, res) => {
   frontSendFile(req, res)
 })
 app.get('/sports', (req, res) => {
+  frontSendFile(req, res)
+})
+app.get('*', (req, res) => {
   frontSendFile(req, res)
 })
 
