@@ -10,7 +10,7 @@ whiskyAreasRouter.post('/', async (request, response) => {
   const { name } = request.body
 
   if (!request.user) {
-    return response.status(401).json({ error: 'missing token' })
+    return response.status(401).end()
   }
 
   const whiskyAreas = new WhiskyAreas({

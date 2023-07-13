@@ -33,7 +33,7 @@ whiskyCsvRouter.post('/', upload.single('csvfile'), async (req, res) => {
   const csvFile = req.file.path
 
   if (!req.user) {
-    return res.status(401).json({ error: 'token missing or invalid' })
+    return response.status(401).end()
   }
 
   truncateWhiskyCollections()

@@ -10,7 +10,7 @@ categoriesRouter.post('/', async (request, response) => {
   const { name, } = request.body
 
   if (!request.user)
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401).end()
 
   const categories = new Categories({
     name,
@@ -25,7 +25,7 @@ categoriesRouter.delete('/:id', async (request, response) => {
   const categoriesToDelete = await Categories.findById(request.params.id)
 
   if (!request.user)
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401).end()
     
   if (categoriesToDelete) {
     await Categories.findByIdAndRemove(request.params.id)

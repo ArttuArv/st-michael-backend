@@ -31,7 +31,7 @@ openingHoursRouter.put('/:id', async (request, response) => {
   let { day, openinghours } = request.body
 
   if (!request.user) {
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401).end()
   }
 
   day = addWhiteSpacesAroundHyphen(day)
@@ -55,11 +55,11 @@ openingHoursRouter.delete('/:id', async (request, response) => {
     return response.status(404).json({ error: 'opening hours not found' })
   
   if (!request.user) 
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401).end()
 
   await OpeningHours.findByIdAndRemove(request.params.id)
-  response.status(204).end()
-    
+
+  response.status(204).end()    
 })
 
 module.exports = openingHoursRouter
