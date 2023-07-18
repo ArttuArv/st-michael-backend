@@ -4,14 +4,14 @@ const beerRouter = require('express').Router()
 
 beerRouter.get('/', async (request, response) => {
   const beers = await Beer.find({}).populate('category', { name: 1, })
-  response.json(beers)
+  response.status(200).json(beers)
 })
 
 beerRouter.post('/', async (request, response) => {
   const { name, style, country, price, category } = request.body
 
   if (!request.user) 
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401).end()
   
   if (category === 'Seasonal Bottles' || category === 'Seasonal Draughts' || category === 'Regular Bottles' || category === 'Regular Draughts') {
       
@@ -41,7 +41,7 @@ beerRouter.put('/:id', async (request, response) => {
   const { name, style, country, price, category } = request.body
 
   if (!request.user)
-    return response.status(401).json({ error: 'Token missing or invalid' })
+  return response.status(401).end()
   
   if (category === 'Seasonal Bottles' || category === 'Seasonal Draughts' || category === 'Regular Bottles' || category === 'Regular Draughts') {
     const beer = {
@@ -68,7 +68,7 @@ beerRouter.delete('/:id', async (request, response) => {
   const beerToDelete = await Beer.findById(request.params.id)
 
   if (!request.user)
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401).end()
   
   if (beerToDelete) {
     await Beer.findByIdAndRemove(request.params.id)

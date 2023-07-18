@@ -10,7 +10,7 @@ liveMusicRouter.post('/', async (request, response) => {
   const { name, date, time } = request.body
 
   if (!request.user)
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401).end()
   
   const liveMusic = new LiveMusic({
     name,
@@ -28,7 +28,7 @@ liveMusicRouter.put('/:id', async (request, response) => {
   const { name, date, time } = request.body
 
   if (!request.user)
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401).end()
   
   const liveMusic = {
     name,
@@ -45,7 +45,7 @@ liveMusicRouter.put('/:id', async (request, response) => {
 liveMusicRouter.delete('/:id', async (request, response) => {
 
   if (!request.user)
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401).end()
 
   await LiveMusic.findByIdAndRemove(request.params.id)
 

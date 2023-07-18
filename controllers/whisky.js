@@ -23,7 +23,7 @@ whiskyRouter.post('/', async (request, response) => {
   const { name, area, price, } = request.body
 
   if (!request.user) {
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401).end()
   } else {
     const whiskyArea = await WhiskyAreas.findOne({ name: area })
 
@@ -54,7 +54,7 @@ whiskyRouter.post('/', async (request, response) => {
 whiskyRouter.delete('/:id', async (request, response) => {
   
   if (!request.user) 
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401).end()
 
   const whiskyToDelete = await Whisky.findById(request.params.id)
 
@@ -76,7 +76,7 @@ whiskyRouter.put('/:id', async (request, response) => {
   const { name, area, price, } = request.body
 
   if (!request.user)
-    return response.status(401).json({ error: 'Token missing or invalid' })
+    return response.status(401).end()
 
   const whisky = {
     name,
