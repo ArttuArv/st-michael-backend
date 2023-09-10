@@ -3,11 +3,11 @@ const csv = require('csvtojson')
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
-const { 
-  truncateWhiskyCollections, 
+const {
+  truncateWhiskyCollections,
   truncateWhiskyAreasCollection,
-  createWhiskyAreaIfNotExists, 
-  createWhiskyObjectsSeparatedByArea, 
+  createWhiskyAreaIfNotExists,
+  createWhiskyObjectsSeparatedByArea,
   insertWhiskiesIntoDatabase,
   deleteAllWhiskyAreasNotInCsv,
 } = require('../utils/csvToMongoUtils')
@@ -29,17 +29,17 @@ whiskyCsvRouter.post('/', upload.single('csvfile'), async (req, res) => {
   if (req.file?.path === undefined) {
     return res.status(400).json({ error: 'No file selected' })
   }
-  
+
   const csvFile = req.file.path
 
   if (!req.user) {
-    return response.status(401).end()
+    return res.status(401).end()
   }
 
-  truncateWhiskyCollections()
-    .then(() => truncateWhiskyAreasCollection())
-    .then(() =>
-      csv(
+  await truncateWhiskyCollections()
+  // .then(() => truncateWhiskyAreasCollection())
+  .then(() =>
+    csv(
       {
         noheader: false,
         headers: ['name', 'area', 'price'],
@@ -50,24 +50,23 @@ whiskyCsvRouter.post('/', upload.single('csvfile'), async (req, res) => {
       .fromFile(csvFile)
       .then(async (response) => {
 
-        const whiskyAreaCount = createWhiskyAreaIfNotExists(response)
+        await createWhiskyAreaIfNotExists(response)
 
-        setTimeout(() => {
-          const whiskiesByArea = createWhiskyObjectsSeparatedByArea(response)      
-          insertWhiskiesIntoDatabase(whiskiesByArea)
-          deleteAllWhiskyAreasNotInCsv(whiskiesByArea)
+        const whiskiesByArea = await createWhiskyObjectsSeparatedByArea(response)
 
-          return res.status(200).send( response )    
+        await insertWhiskiesIntoDatabase(whiskiesByArea)
 
-        }, 1000)
+        await deleteAllWhiskyAreasNotInCsv(whiskiesByArea)
+
+        return res.status(200).send(response)
 
       })
       .then(() => removeFileFromDisk(csvFile))
       .catch((err) => {
         console.log(err)
         return res.status(400).json({ error: 'Error parsing csv file' })
-      })    
-    )
+      })
+  )
 })
 
 

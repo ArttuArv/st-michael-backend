@@ -86,8 +86,8 @@ whiskyRouter.put('/:id', async (request, response) => {
 
   const existingWhisky = await Whisky.findById(request.params.id)
 
-  if (whisky.name === existingWhisky.name)
-    response.status(400).json({ message: 'Whisky already exists'})
+  // if (whisky.name === existingWhisky.name)
+  //   response.status(400).json({ message: 'Whisky already exists'})
 
   await removeOldEntryFromWhiskyAreas(existingWhisky)
 

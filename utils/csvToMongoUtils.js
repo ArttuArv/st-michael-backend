@@ -2,6 +2,7 @@ const Whisky = require('../models/whisky')
 const WhiskyAreas = require('../models/whiskyareas')
 
 const truncateWhiskyCollections = async () => {
+
   Whisky.deleteMany({}, (err) => {
     if (err) {
       console.log(err)
@@ -11,7 +12,7 @@ const truncateWhiskyCollections = async () => {
   })
 }
 
-const truncateWhiskyAreasCollection = async () => {
+const truncateWhiskyAreasCollection = () => {
   WhiskyAreas.deleteMany({}, (err) => {
     if (err) {
       console.log(err)
@@ -21,29 +22,26 @@ const truncateWhiskyAreasCollection = async () => {
   })
 }
 
-const createWhiskyAreaIfNotExists = (response) => {
+async function createWhiskyAreaIfNotExists(response) {
   const whiskyAreas = response.map((whisky) => whisky.area)
   const uniqueWhiskyAreas = [...new Set(whiskyAreas)]
 
-  uniqueWhiskyAreas.forEach(async (area) => {
+  await uniqueWhiskyAreas.forEach(async (area) => {
 
     if (await WhiskyAreas.findOne({ name: area })) {
       console.log('Whisky area already exists')
     } else {
 
-      const whiskyAreas = new WhiskyAreas({
-        name: area,
-      })
+      const whiskyAreas = new WhiskyAreas({ name: area })
 
       console.log(`Whisky area ${area} created`)
+
       await whiskyAreas.save()
     }
   })
-
-  return uniqueWhiskyAreas.length
 }
 
-const createWhiskyObjectsSeparatedByArea = (response) => {
+const createWhiskyObjectsSeparatedByArea = async (response) => {
   return response.reduce((acc, whisky) => {
 
     const key = whisky.area
@@ -65,7 +63,7 @@ const createWhiskyObjectsSeparatedByArea = (response) => {
   }, {})
 }
 
-const insertWhiskiesIntoDatabase = (whiskiesByArea) => {
+const insertWhiskiesIntoDatabase = async (whiskiesByArea) => {
 
   Object.keys(whiskiesByArea).forEach(async (area) => {
     const whiskyArea = await WhiskyAreas.findOne({ name: area })
