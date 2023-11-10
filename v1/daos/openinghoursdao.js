@@ -1,5 +1,5 @@
 const OpeningHours = require('../models/openingHours')
-const { addWhiteSpacesAroundHyphen } = require('../utils/stringManipulation')
+const { addWhiteSpacesAroundHyphen } = require('../../utils/stringManipulation')
 
 const getOpeningHours = async () => {
   return await OpeningHours.find({})

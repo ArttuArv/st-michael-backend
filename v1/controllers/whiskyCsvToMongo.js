@@ -10,7 +10,7 @@ const {
   createWhiskyObjectsSeparatedByArea,
   insertWhiskiesIntoDatabase,
   deleteAllWhiskyAreasNotInCsv,
-} = require('../utils/csvToMongoUtils')
+} = require('../../utils/csvToMongoUtils')
 
 // Multer and csv to mongoDB middlewares
 const storage = multer.diskStorage({
@@ -63,7 +63,6 @@ whiskyCsvRouter.post('/', upload.single('csvfile'), async (req, res) => {
       })
   )
 })
-
 
 module.exports = whiskyCsvRouter
 

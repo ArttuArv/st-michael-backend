@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const refreshRouter = require('express').Router()
 const User = require('../models/user')
-const { generateAccessToken } = require('../utils/middleware')
+const { generateAccessToken } = require('../../utils/middleware')
 
 refreshRouter.get('/', async (request, response) => {
   const cookies = request.cookies
