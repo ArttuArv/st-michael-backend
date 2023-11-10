@@ -26,22 +26,6 @@ refreshRouter.get('/', async (request, response) => {
 
     }
   )
-
-/*   const user = await User.findOne({ refreshToken: refreshToken }).exec()
-
-  if (!user) return response.sendStatus(403)
-
-  jwt.verify(
-    refreshToken, 
-    process.env.REFRESH_TOKEN_SECRET, 
-    (error, decoded) => {
-      if (error || user.username !== decoded.username) return response.sendStatus(403)
-
-      const accessToken = generateAccessToken(user)
-
-      response.status(200).send({ accessToken })
-    }
-  ) */
 })
 
 module.exports = refreshRouter

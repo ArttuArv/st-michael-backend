@@ -11,8 +11,18 @@ beerRouter.post('/', async (request, response) => {
 
   if (!request.user) 
     return response.status(401).end()  
-  if (category === 'Seasonal Bottles' || category === 'Seasonal Draughts' || category === 'Regular Bottles' || category === 'Regular Draughts') {      
-    const savedBeer = await beerDao.saveBeer(category, name, style, country, price)  
+  if (category === 'Seasonal Bottles' || category === 'Seasonal Draughts' 
+    || category === 'Regular Bottles' || category === 'Regular Draughts') { 
+    
+    const newBeer = {
+      name,
+      style,
+      country,
+      price,
+      category,
+    }    
+
+    const savedBeer = await beerDao.saveBeer(newBeer)  
     response.status(201).json(savedBeer)    
   } else {    
     return response.status(400).json({ error: 'Category must be Seasonal Bottles, Seasonal Draughts, Regular Bottles or Regular Draughts' })
@@ -26,7 +36,8 @@ beerRouter.put('/:id', async (request, response) => {
   if (!request.user)
   return response.status(401).end()
   
-  if (category === 'Seasonal Bottles' || category === 'Seasonal Draughts' || category === 'Regular Bottles' || category === 'Regular Draughts') {
+  if (category === 'Seasonal Bottles' || category === 'Seasonal Draughts' 
+    || category === 'Regular Bottles' || category === 'Regular Draughts') {
 
     const beer = {
       name,
@@ -53,7 +64,7 @@ beerRouter.delete('/:id', async (request, response) => {
   const beerToDelete = await beerDao.getBeerById(request.params.id)
   
   if (beerToDelete) {
-    await deleteBeer(request, beerToDelete)    
+    await beerDao.deleteBeer(request, beerToDelete)    
     response.status(204).end()
   } else {
     response.status(404).end()

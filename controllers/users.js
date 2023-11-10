@@ -1,73 +1,37 @@
-require('dotenv').config()
-
-const User = require('../models/user')
-const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
+const userDao = require('../daos/userdao')
 
 usersRouter.get('/', async (request, response) => {
-  if (!request.user) {
-    return response.status(401).end()
-  }
+  if (!request.user) return response.status(401).end()
 
-  const users = await User.find({}).populate()
+  const users = await userDao.getUsers()
   response.json(users)
 })
 
 usersRouter.post('/', async (request, response) => {
-  const { username, name, password } = request.body
+  const { username, password } = request.body
 
   if (!request.user) return response.status(401).end()
-
   if (!username || !password) return response.status(400).json({ error: 'username and password required' })
 
-  const existingUser = await User.findOne({ username }).exec()
-
-  if (existingUser) return response.status(409).json({ error: 'username must be unique' })  
-
-  const saltRounds = 10
-  const passwordHash = await bcrypt.hash(password, saltRounds)
-
-  const user = new User({
-    username,
-    name: name === undefined ? username : (name || name === '') ? username : name,
-    passwordHash,
-  })
-
-  const savedUser = await user.save()
-
-  response.status(201).json(savedUser)
-  
+  const responseMsg = await userDao.createUser(request)
+  response.status(responseMsg.status).json(responseMsg.message)  
 })
 
 usersRouter.put('/', async (request, response) => {
   const { username, password } = request.body
   
-  if (!request.user) {
-    return response.status(401).end()
-  }
+  if (!request.user) return response.status(401).end()
 
-  const saltRounds = 10
-  const passwordHash = await bcrypt.hash(password, saltRounds)
-
-  const userUpdate = {
-    username,
-    passwordHash,
-  }
-
-  const id = await User.findOne({ username }).exec()
-  const updatedUser = await User.findByIdAndUpdate(id, userUpdate, { new: true }).exec()
-
+  const updatedUser = await userDao.updateUser(username, password, request)
   response.status(201).json(updatedUser)
 })
 
 usersRouter.delete('/:id', async (request, response) => {
 
-  if (!request.user) {
-    return response.status(401).end()
-  }
+  if (!request.user) return response.status(401).end()
 
-  User.findByIdAndRemove(request.params.id)
-
+  await userDao.deleteUser(request.params.id)
   response.status(204).end()
 })
 

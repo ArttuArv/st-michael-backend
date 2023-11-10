@@ -1,17 +1,13 @@
-const Whisky = require('../models/whisky')
-const WhiskyAreas = require('../models/whiskyareas')
 const whiskyRouter = require('express').Router()
+const whiskyDao = require('../daos/whiskydao')
 
 whiskyRouter.get('/', async (request, response) => {
-  const whiskies = (typeof Whisky.find({}).populate().then == 'function') 
-    ? await Whisky.find({}).populate() 
-    : Whisky.find({}).populate()
-    
+  const whiskies = await whiskyDao.getWhiskies()    
   response.json(whiskies)
 })
 
 whiskyRouter.get('/:id', async (request, response) => {
-  const whisky = await Whisky.findById(request.params.id)
+  const whisky = await whiskyDao.getWhiskyById(request.params.id)
 
   if (!whisky)
     response.status(404).json({ message: 'Whisky not found' })
@@ -21,32 +17,15 @@ whiskyRouter.get('/:id', async (request, response) => {
 
 whiskyRouter.post('/', async (request, response) => {
   const { name, area, price, } = request.body
-
   if (!request.user) {
     return response.status(401).end()
   } else {
-    const whiskyArea = await WhiskyAreas.findOne({ name: area })
-
-    if (!whiskyArea) {
-      const whiskyAreas = new WhiskyAreas({
-        name: area,
-      })
-      await whiskyAreas.save();
-    }
-
-    const newWhiskyArea = await WhiskyAreas.findOne({ name: area })
-
-    const whisky = new Whisky({
+    const newWhisky = {
       name,
       area,
       price,
-    })
-
-    const savedWhisky = await whisky.save()
-  
-    newWhiskyArea.whiskies = newWhiskyArea.whiskies.concat(savedWhisky._id)
-    await newWhiskyArea.save();
-
+    }
+    const savedWhisky = await whiskyDao.createWhisky(newWhisky)  
     response.status(201).json(savedWhisky)
   }
 })
@@ -56,20 +35,10 @@ whiskyRouter.delete('/:id', async (request, response) => {
   if (!request.user) 
     return response.status(401).end()
 
-  const whiskyToDelete = await Whisky.findById(request.params.id)
+  const responseMsg = await whiskyDao.deleteWhisky(request)
 
-  if (whiskyToDelete) {
-    await Whisky.findByIdAndRemove(request.params.id)
-
-    const whiskyArea = await WhiskyAreas.findOne({ name: whiskyToDelete.area })
-    whiskyArea.whiskies = whiskyArea.whiskies.filter(whisky => whisky.toString() !== whiskyToDelete._id.toString())
-    await whiskyArea.save()
-
-    response.status(201).json({ message: `Whisky ${whiskyToDelete.name} deleted` })
-    
-  } else {
-    response.status(404).json({ error: 'whisky not found' })
-  }
+  response.status(responseMsg.status).json({ message: responseMsg.message })
+ 
 })
 
 whiskyRouter.put('/:id', async (request, response) => {
@@ -84,34 +53,9 @@ whiskyRouter.put('/:id', async (request, response) => {
     price,
   }
 
-  const existingWhisky = await Whisky.findById(request.params.id)
-
-  // if (whisky.name === existingWhisky.name)
-  //   response.status(400).json({ message: 'Whisky already exists'})
-
-  await removeOldEntryFromWhiskyAreas(existingWhisky)
-
-  const updatedWhisky = await updateWhiskyAndWhiskyArea(whisky, request) 
+  const updatedWhisky = await whiskyDao.updateWhisky(whisky, request)   
 
   response.status(201).json(updatedWhisky)
 })
 
 module.exports = whiskyRouter
-
-async function updateWhiskyAndWhiskyArea(whisky, request) {
-  const updatedWhiskyArea = await WhiskyAreas.findOne({ name: whisky.area })
-  const updatedWhisky = await Whisky.findByIdAndUpdate(request.params.id, whisky, { new: true })
-  updatedWhiskyArea.whiskies = updatedWhiskyArea.whiskies.concat(updatedWhisky._id)
-
-  await updatedWhiskyArea.save()
-
-  return updatedWhisky
-}
-
-async function removeOldEntryFromWhiskyAreas(oldWhisky) {
-
-  const oldWhiskyArea = await WhiskyAreas.findOne({ name: oldWhisky.area })  
-  oldWhiskyArea.whiskies = oldWhiskyArea.whiskies.filter(whisky => whisky.toString() !== oldWhisky._id.toString())
-
-  await oldWhiskyArea.save()
-}

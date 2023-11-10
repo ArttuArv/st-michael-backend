@@ -2,23 +2,26 @@ const Beer = require('../models/beer')
 const Categories = require('../models/categories')
 
 const getBeers = async () => {
-  const beers = await Beer.find({}).populate('category', { name: 1, })
-  return beers
+  return await Beer.find({}).populate('category', { name: 1, })
 }
 
 const getBeerById = async (id) => {
-  const beer = await Beer.findById(id)
-  return beer
+  return await Beer.findById(id)
 }
 
-const saveBeer = async (category, name, style, country, price) => {
-  const beerCategory = await Categories.findOne({ name: category })
+const getBeerByName = async (name) => {
+  return await Beer.findOne({ name })
+}
+
+const saveBeer = async (newBeer) => {
+
+  const beerCategory = await Categories.findOne({ name: newBeer.category })
 
   const beer = new Beer({
-    name,
-    style,
-    country,
-    price,
+    name: newBeer.name,
+    style: newBeer.style,
+    country: newBeer.country,
+    price: newBeer.price,
     category: beerCategory.name,
   })
 
@@ -50,6 +53,7 @@ module.exports = {
   getBeerById,
   updateBeer,
   deleteBeer,
+  getBeerByName,
 }
 
 async function updateBeerAndCategory(request, beer) {

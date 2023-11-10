@@ -73,6 +73,16 @@ app.use('/api/csv', whiskyCsvRouter)
 app.use('/api/openinghours', openingHoursRouter)
 app.use('/api/livemusic', liveMusicRouter)
 
+// Upcoming v2 routes
+app.use('/api/v2/users', usersRouter)
+app.use('/api/v2/beer', beerRouter)
+app.use('/api/v2/categories', categoriesRouter)
+app.use('/api/v2/whisky', whiskyRouter)
+app.use('/api/v2/whiskyareas', whiskyAreasRouter)
+app.use('/api/v2/csv', whiskyCsvRouter)
+app.use('/api/v2/openinghours', openingHoursRouter)
+app.use('/api/v2/livemusic', liveMusicRouter)
+
 // Frontend Routes
 app.get('/', (req, res) => {
   frontSendFile(req, res)

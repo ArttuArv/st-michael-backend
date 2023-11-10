@@ -1,64 +1,42 @@
-const OpeningHours = require('../models/openingHours')
-const { addWhiteSpacesAroundHyphen } = require('../utils/stringManipulation')
 const openingHoursRouter = require('express').Router()
+const openinghoursDao = require('../daos/openinghoursdao')
 
 openingHoursRouter.get('/', async (request, response) => {
-  const openingHours = await OpeningHours.find({})
+  const openingHours = await openinghoursDao.getOpeningHours()
   response.json(openingHours)
 })
 
-openingHoursRouter.post('/', async (request, response) => {
-  let { day, openinghours } = request.body
+openingHoursRouter.post('/', async (request, response) => {  
 
   if (!request.user) {
-    return response.status(401)/* .json({ error: 'Token missing or invalid' }) */
+    return response.status(401)
   }
 
-  day = addWhiteSpacesAroundHyphen(day)
-  openinghours = addWhiteSpacesAroundHyphen(openinghours)
-
-  const openingHour = new OpeningHours({
-    day,
-    openinghours,
-  })
-
-  const savedOpeningHour = await openingHour.save()
-
+  const savedOpeningHour = await openinghoursDao.createOpeningHours(request)
   response.status(201).json(savedOpeningHour)
 })
 
-openingHoursRouter.put('/:id', async (request, response) => {
-  let { day, openinghours } = request.body
+openingHoursRouter.put('/:id', async (request, response) => { 
 
   if (!request.user) {
     return response.status(401).end()
   }
 
-  day = addWhiteSpacesAroundHyphen(day)
-  openinghours = addWhiteSpacesAroundHyphen(openinghours)  
-
-  const openingHour = {
-    day,
-    openinghours,
-  }
-
-  const updatedOpeningHour = await OpeningHours.findByIdAndUpdate(request.params.id, openingHour, { new: true })
-
+  const updatedOpeningHour = await openinghoursDao.updateOpeningHours(request)
   response.status(201).json(updatedOpeningHour)
 })
 
 openingHoursRouter.delete('/:id', async (request, response) => {
 
-  const hoursToDelete = await OpeningHours.findById(request.params.id)
-
-  if (!hoursToDelete)
-    return response.status(404).json({ error: 'opening hours not found' })
-  
   if (!request.user) 
     return response.status(401).end()
 
-  await OpeningHours.findByIdAndRemove(request.params.id)
+  const hoursToDelete = await openinghoursDao.getOpeningHoursById(request.params.id)
 
+  if (!hoursToDelete)
+    return response.status(404).json({ error: 'opening hours not found' })
+
+  await openinghoursDao.deleteOpeningHours(request)
   response.status(204).end()    
 })
 
