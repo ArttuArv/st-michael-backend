@@ -2,12 +2,14 @@ const beerRouter = require('express').Router()
 const beerSql = require('../models/beer')
 
 beerRouter.get('/:id', (request, response) => {
-  beerSql.getBeer(request.params.id, (err, result) => {
+  beerSql.getBeerById(request.params.id, (err, result) => {
     if (err) {
       return response.status(404).json({ error: 'beer not found' })
-    }
-    
+    }    
     const beer = result.length > 0 ? result[0] : null
+    if (!beer) {
+      return response.status(404).json({ error: 'beer not found' })
+    }
     response.json(beer)
   })
 })
