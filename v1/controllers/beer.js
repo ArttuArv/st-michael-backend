@@ -71,4 +71,4 @@ beerRouter.delete('/:id', async (request, response) => {
   }
 })
 
-module.exports = beerRouter;
+module.exports = beerRouter

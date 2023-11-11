@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser')
 const { connectDB, listenApp } = require('./utils/dbConn')
 const path = require('path')
 
+// v1 routes
 const usersRouter = require('./v1/controllers/users')
 const loginRouter = require('./v1/controllers/login')
 const beerRouter = require('./v1/controllers/beer')
@@ -18,6 +19,9 @@ const whiskyCsvRouter = require('./v1/controllers/whiskyCsvToMongo')
 const liveMusicRouter = require('./v1/controllers/liveMusic')
 const refreshRouter = require('./v1/controllers/refresh')
 const logoutRouter = require('./v1/controllers/logout')
+
+// v2 routes
+const beerRouterV2 = require('./v2/controllers/beer')
 
 const logger = require('./utils/logger')
 const { 
@@ -52,26 +56,26 @@ app.use(express.static(path.resolve(__dirname, 'public')))
 
 
 // Routes and middlewares
-app.use('/api/login', loginRouter)
-app.use('/api/refresh', refreshRouter)
-app.use('/api/logout', logoutRouter)
+app.use('/api/v1/login', loginRouter)
+app.use('/api/v1/refresh', refreshRouter)
+app.use('/api/v1/logout', logoutRouter)
 
 app.use(requestLogger)
 app.use(tokenExtractor)
 app.use(userExtractor)
 
-app.use('/api/users', usersRouter)
-app.use('/api/beer', beerRouter)
-app.use('/api/categories', categoriesRouter)
-app.use('/api/whisky', whiskyRouter)
-app.use('/api/whiskyareas', whiskyAreasRouter)
-app.use('/api/csv', whiskyCsvRouter)
-app.use('/api/openinghours', openingHoursRouter)
-app.use('/api/livemusic', liveMusicRouter)
+app.use('/api/v1/users', usersRouter)
+app.use('/api/v1/beer', beerRouter)
+app.use('/api/v1/categories', categoriesRouter)
+app.use('/api/v1/whisky', whiskyRouter)
+app.use('/api/v1/whiskyareas', whiskyAreasRouter)
+app.use('/api/v1/csv', whiskyCsvRouter)
+app.use('/api/v1/openinghours', openingHoursRouter)
+app.use('/api/v1/livemusic', liveMusicRouter)
 
 // Upcoming v2 routes
 app.use('/api/v2/users', usersRouter)
-app.use('/api/v2/beer', beerRouter)
+app.use('/api/v2/beer', beerRouterV2)
 app.use('/api/v2/categories', categoriesRouter)
 app.use('/api/v2/whisky', whiskyRouter)
 app.use('/api/v2/whiskyareas', whiskyAreasRouter)
