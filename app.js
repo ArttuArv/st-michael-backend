@@ -21,7 +21,12 @@ const refreshRouter = require('./v1/controllers/refresh')
 const logoutRouter = require('./v1/controllers/logout')
 
 // v2 routes
+const usersRouterV2 = require('./v2/controllers/user')
 const beerRouterV2 = require('./v2/controllers/beer')
+const whiskyCsvRouterV2 = require('./v2/controllers/whiskyCsv')
+const whiskyRouterV2 = require('./v2/controllers/whisky')
+const liveEventsRouterV2 = require('./v2/controllers/liveEvents')
+const openingHoursRouterV2 = require('./v2/controllers/openinghours')
 
 const logger = require('./utils/logger')
 const { 
@@ -74,14 +79,12 @@ app.use('/api/v1/openinghours', openingHoursRouter)
 app.use('/api/v1/livemusic', liveMusicRouter)
 
 // Upcoming v2 routes
-app.use('/api/v2/users', usersRouter)
+app.use('/api/v2/users', usersRouterV2)
 app.use('/api/v2/beer', beerRouterV2)
-app.use('/api/v2/categories', categoriesRouter)
-app.use('/api/v2/whisky', whiskyRouter)
-app.use('/api/v2/whiskyareas', whiskyAreasRouter)
-app.use('/api/v2/csv', whiskyCsvRouter)
-app.use('/api/v2/openinghours', openingHoursRouter)
-app.use('/api/v2/livemusic', liveMusicRouter)
+app.use('/api/v2/whisky', whiskyRouterV2)
+app.use('/api/v2/csv', whiskyCsvRouterV2)
+app.use('/api/v2/openinghours', openingHoursRouterV2)
+app.use('/api/v2/livemusic', liveEventsRouterV2)
 
 // Frontend Routes
 app.get('/', (req, res) => {
