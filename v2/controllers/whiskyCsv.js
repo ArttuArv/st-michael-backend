@@ -19,8 +19,8 @@ const upload = multer({ storage: storage })
 
 whiskyCsvRouter.post('/', upload.single('csvfile'), async (request, response) => {
 
-  // if (!request.user) 
-  //   return response.status(401).end()
+  if (!request.user) 
+    return response.status(401).end()
 
   if (request.file?.path === undefined) {
     return response.status(400).json({ error: 'No file selected' })
