@@ -1,16 +1,25 @@
 const bcrypt = require('bcrypt')
 const loginRouter = require('express').Router()
-const User = require('../models/user')
+const userSql = require('../models/user')
 const { generateAccessToken, generateRefreshToken } = require('../../utils/middleware')
 
 loginRouter.post('/', async (request, response) => {
   const { username, password } = request.body
+  let user = null
 
-  const user = await User.findOne({ username })
+  if (!username || !password) {
+    return response.status(400).json({ error: 'content missing' })
+  }
+
+  try {
+    user = await userSql.getUserByUsername(username)
+  } catch (err) {
+    response.status(400).json({ error: 'user not found', message: err.message });
+  }
 
   const passwordCorrect = user === null
     ? false
-    : await bcrypt.compare(password, user.passwordHash)
+    : await bcrypt.compare(password, user.password)
 
   if (!(user && passwordCorrect)) {
     return response.status(401).json({
@@ -21,8 +30,20 @@ loginRouter.post('/', async (request, response) => {
   const token = generateAccessToken(user)
   const refreshToken = generateRefreshToken(user)
 
+  const updatedUser = {
+    id: user.id,
+    username: user.username,
+    password: user.password,
+    refreshToken: refreshToken,
+  }
+
   // Save refresh token to database
-  await User.findByIdAndUpdate(user._id, { refreshToken: refreshToken }, { new: true }).exec()
+  await userSql.updateUser(updatedUser, (err, result) => {
+    if (err) {
+      return response.status(404).json({ error: err.message })
+    }
+    return result
+  })
 
   response.cookie('refreshToken', refreshToken, { 
     httpOnly: true, 
@@ -31,9 +52,9 @@ loginRouter.post('/', async (request, response) => {
     secure: true
   }) // secure: true, sameSite: 'none' for https
 
-  response.status(200).send({ 
+  response.status(200).send({
     access: token,
-    name: user.name,
+    name: user.name || 'admin',
   })
 })
 

@@ -82,7 +82,7 @@ const insertOpeningHoursQuery =
 
 const updateOpeningHoursQuery =
   `UPDATE openinghours 
-    SET day = ?, opening_hours = ?
+    SET day = ?, openinghours = ?
     WHERE openinghours_id = ?`
 
 const deleteOpeningHoursQuery =
@@ -97,6 +97,9 @@ const getUserByIdQuery =
 
 const getUserByUsernameQuery =
   `SELECT users_id AS id, username, password, refresh_token AS refreshToken FROM users WHERE username = ?`
+
+const getUserByRefreshTokenQuery =
+  `SELECT users_id AS id, username, password, refresh_token AS refreshToken FROM users WHERE refresh_token = ?`
 
 const insertUserQuery =
   `INSERT INTO users (username, password)
@@ -144,4 +147,5 @@ module.exports = {
   updateUserQuery,
   deleteUserQuery,
   loginQuery,
+  getUserByRefreshTokenQuery,
 }

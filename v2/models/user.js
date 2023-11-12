@@ -6,6 +6,7 @@ const {
   deleteUserQuery,
   getUserByIdQuery,
   getUserByUsernameQuery,
+  getUserByRefreshTokenQuery
 } = require('../../utils/queries')
 const bcrypt = require('bcrypt')
 
@@ -17,8 +18,28 @@ const getUserById = (id, callback) => {
   return mySqlConnection.query(getUserByIdQuery, [id], callback)
 }
 
-const getUserByUsername = (username, callback) => {
-  return mySqlConnection.query(getUserByUsernameQuery, [username], callback)
+const getUserByUsername = (username) => {
+  return new Promise((resolve, reject) => {
+    mySqlConnection.query(getUserByUsernameQuery, [username], (err, result) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result[0])
+      }
+    })
+  })
+}
+
+const getUserByRefreshToken = (refreshToken) => {
+  return new Promise((resolve, reject) => {
+    mySqlConnection.query(getUserByRefreshTokenQuery, [refreshToken], (err, result) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(result[0])
+      }
+    })
+  })
 }
 
 const createUser = async (user) => {
@@ -72,5 +93,6 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
+  getUserByRefreshToken
 }
 

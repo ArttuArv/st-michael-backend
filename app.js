@@ -8,17 +8,17 @@ const { connectDB, listenApp } = require('./utils/dbConn')
 const path = require('path')
 
 // v1 routes
-const usersRouter = require('./v1/controllers/users')
-const loginRouter = require('./v1/controllers/login')
-const beerRouter = require('./v1/controllers/beer')
-const categoriesRouter = require('./v1/controllers/categories')
-const whiskyRouter = require('./v1/controllers/whisky')
-const whiskyAreasRouter = require('./v1/controllers/whiskyAreas')
-const openingHoursRouter = require('./v1/controllers/openingHours')
-const whiskyCsvRouter = require('./v1/controllers/whiskyCsvToMongo')
-const liveMusicRouter = require('./v1/controllers/liveMusic')
-const refreshRouter = require('./v1/controllers/refresh')
-const logoutRouter = require('./v1/controllers/logout')
+const usersRouterV1 = require('./v1/controllers/users')
+const loginRouterV1 = require('./v1/controllers/login')
+const beerRouterV1 = require('./v1/controllers/beer')
+const categoriesRouterV1 = require('./v1/controllers/categories')
+const whiskyRouterV1 = require('./v1/controllers/whisky')
+const whiskyAreasRouterV1 = require('./v1/controllers/whiskyAreas')
+const openingHoursRouterV1 = require('./v1/controllers/openingHours')
+const whiskyCsvRouterV1 = require('./v1/controllers/whiskyCsvToMongo')
+const liveMusicRouterV1 = require('./v1/controllers/liveMusic')
+const refreshRouterV1 = require('./v1/controllers/refresh')
+const logoutRouterV1 = require('./v1/controllers/logout')
 
 // v2 routes
 const usersRouterV2 = require('./v2/controllers/user')
@@ -27,6 +27,9 @@ const whiskyCsvRouterV2 = require('./v2/controllers/whiskyCsv')
 const whiskyRouterV2 = require('./v2/controllers/whisky')
 const liveEventsRouterV2 = require('./v2/controllers/liveEvents')
 const openingHoursRouterV2 = require('./v2/controllers/openinghours')
+const loginRouterV2 = require('./v2/controllers/login')
+const logoutRouterV2 = require('./v2/controllers/logout')
+const refreshRouterV2 = require('./v2/controllers/refresh')
 
 const logger = require('./utils/logger')
 const { 
@@ -61,22 +64,29 @@ app.use(express.static(path.resolve(__dirname, 'public')))
 
 
 // Routes and middlewares
-app.use('/api/v1/login', loginRouter)
-app.use('/api/v1/refresh', refreshRouter)
-app.use('/api/v1/logout', logoutRouter)
+// v1 routes
+app.use('/api/v1/login', loginRouterV1)
+app.use('/api/v1/refresh', refreshRouterV1)
+app.use('/api/v1/logout', logoutRouterV1)
+
+// v2 routes
+app.use('/api/v2/login', loginRouterV2)
+app.use('/api/v2/logout', logoutRouterV2)
+app.use('/api/v2/refresh', refreshRouterV2)
 
 app.use(requestLogger)
 app.use(tokenExtractor)
 app.use(userExtractor)
 
-app.use('/api/v1/users', usersRouter)
-app.use('/api/v1/beer', beerRouter)
-app.use('/api/v1/categories', categoriesRouter)
-app.use('/api/v1/whisky', whiskyRouter)
-app.use('/api/v1/whiskyareas', whiskyAreasRouter)
-app.use('/api/v1/csv', whiskyCsvRouter)
-app.use('/api/v1/openinghours', openingHoursRouter)
-app.use('/api/v1/livemusic', liveMusicRouter)
+// v1 routes
+app.use('/api/v1/users', usersRouterV1)
+app.use('/api/v1/beer', beerRouterV1)
+app.use('/api/v1/categories', categoriesRouterV1)
+app.use('/api/v1/whisky', whiskyRouterV1)
+app.use('/api/v1/whiskyareas', whiskyAreasRouterV1)
+app.use('/api/v1/csv', whiskyCsvRouterV1)
+app.use('/api/v1/openinghours', openingHoursRouterV1)
+app.use('/api/v1/livemusic', liveMusicRouterV1)
 
 // Upcoming v2 routes
 app.use('/api/v2/users', usersRouterV2)
