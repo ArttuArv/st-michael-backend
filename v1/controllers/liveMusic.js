@@ -1,8 +1,8 @@
-const LiveMusic = require('../models/livemusic')
 const liveMusicRouter = require('express').Router()
+const liveMusicDao = require('../daos/livemusicdao')
 
 liveMusicRouter.get('/', async (request, response) => {
-  const liveMusic = await LiveMusic.find({})
+  const liveMusic = await liveMusicDao.getLiveMusic()
   response.json(liveMusic)
 })
 
@@ -12,13 +12,13 @@ liveMusicRouter.post('/', async (request, response) => {
   if (!request.user)
     return response.status(401).end()
   
-  const liveMusic = new LiveMusic({
+  const newLiveMusic = {
     name,
     date,
     time,
-  })
+  }
 
-  const savedLiveMusic = await liveMusic.save()
+  const savedLiveMusic = await liveMusicDao.createLiveMusicEvent(newLiveMusic)
 
   response.status(201).json(savedLiveMusic)
   
@@ -36,7 +36,7 @@ liveMusicRouter.put('/:id', async (request, response) => {
     time,
   }
 
-  const updatedLiveMusic = await LiveMusic.findByIdAndUpdate(request.params.id, liveMusic, { new: true })
+  const updatedLiveMusic = await liveMusicDao.updateLiveMusicEvent(liveMusic, request)
 
   response.status(201).json(updatedLiveMusic)
 
@@ -47,7 +47,7 @@ liveMusicRouter.delete('/:id', async (request, response) => {
   if (!request.user)
     return response.status(401).end()
 
-  await LiveMusic.findByIdAndRemove(request.params.id)
+  await liveMusicDao.deleteLiveMusicEvent(request)
 
   response.status(204).end()
 })

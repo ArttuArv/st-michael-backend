@@ -1,5 +1,5 @@
-const Whisky = require('../models/whisky')
-const WhiskyAreas = require('../models/whiskyareas')
+const Whisky = require('../v1/models/whisky')
+const WhiskyAreas = require('../v1/models/whiskyareas')
 
 const truncateWhiskyCollections = async () => {
 
@@ -27,15 +27,11 @@ async function createWhiskyAreaIfNotExists(response) {
   const uniqueWhiskyAreas = [...new Set(whiskyAreas)]
 
   await uniqueWhiskyAreas.forEach(async (area) => {
-
     if (await WhiskyAreas.findOne({ name: area })) {
       console.log('Whisky area already exists')
     } else {
-
       const whiskyAreas = new WhiskyAreas({ name: area })
-
       console.log(`Whisky area ${area} created`)
-
       await whiskyAreas.save()
     }
   })

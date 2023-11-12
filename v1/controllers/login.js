@@ -1,8 +1,7 @@
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
 const loginRouter = require('express').Router()
 const User = require('../models/user')
-const { generateAccessToken, generateRefreshToken } = require('../utils/middleware')
+const { generateAccessToken, generateRefreshToken } = require('../../utils/middleware')
 
 loginRouter.post('/', async (request, response) => {
   const { username, password } = request.body
@@ -37,6 +36,5 @@ loginRouter.post('/', async (request, response) => {
     name: user.name,
   })
 })
-
 
 module.exports = loginRouter

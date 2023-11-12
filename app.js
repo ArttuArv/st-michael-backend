@@ -2,26 +2,34 @@ const express = require('express')
 require('express-async-errors')
 const app = express()
 const cors = require('cors')
-
-const mongoose = require('mongoose')
-const { connectDB, listenApp } = require('./utils/dbConn')
-
-const path = require('path')
 const cookieParser = require('cookie-parser')
 
-const usersRouter = require('./controllers/users')
-const loginRouter = require('./controllers/login')
-const beerRouter = require('./controllers/beer')
-const categoriesRouter = require('./controllers/categories')
-const whiskyRouter = require('./controllers/whisky')
-const whiskyAreasRouter = require('./controllers/whiskyAreas')
-const openingHoursRouter = require('./controllers/openingHours')
-const whiskyCsvRouter = require('./controllers/whiskyCsvToMongo')
-const liveMusicRouter = require('./controllers/liveMusic')
-const refreshRouter = require('./controllers/refresh')
-const logoutRouter = require('./controllers/logout')
+const { connectDB, listenApp } = require('./utils/dbConn')
+const path = require('path')
 
-const { PORT } = require('./utils/config')
+// v1 routes
+const usersRouterV1 = require('./v1/controllers/users')
+const loginRouterV1 = require('./v1/controllers/login')
+const beerRouterV1 = require('./v1/controllers/beer')
+const categoriesRouterV1 = require('./v1/controllers/categories')
+const whiskyRouterV1 = require('./v1/controllers/whisky')
+const whiskyAreasRouterV1 = require('./v1/controllers/whiskyAreas')
+const openingHoursRouterV1 = require('./v1/controllers/openingHours')
+const whiskyCsvRouterV1 = require('./v1/controllers/whiskyCsvToMongo')
+const liveMusicRouterV1 = require('./v1/controllers/liveMusic')
+const refreshRouterV1 = require('./v1/controllers/refresh')
+const logoutRouterV1 = require('./v1/controllers/logout')
+
+// v2 routes
+const usersRouterV2 = require('./v2/controllers/user')
+const beerRouterV2 = require('./v2/controllers/beer')
+const whiskyCsvRouterV2 = require('./v2/controllers/whiskyCsv')
+const whiskyRouterV2 = require('./v2/controllers/whisky')
+const liveEventsRouterV2 = require('./v2/controllers/liveEvents')
+const openingHoursRouterV2 = require('./v2/controllers/openinghours')
+const loginRouterV2 = require('./v2/controllers/login')
+const logoutRouterV2 = require('./v2/controllers/logout')
+const refreshRouterV2 = require('./v2/controllers/refresh')
 
 const logger = require('./utils/logger')
 const { 
@@ -41,13 +49,13 @@ const frontSendFile = (req, res) => {
 connectDB()
 
 // Dev
-// app.use(credentials)
-// app.use(cors(corrsOptions))
+app.use(credentials)
+app.use(cors(corrsOptions))
 
 // Prod
-app.use(cors({
-  origin: './build',
-}))
+// app.use(cors({
+//   origin: './build',
+// }))
 
 app.use(express.json())
 app.use(cookieParser())
@@ -56,22 +64,37 @@ app.use(express.static(path.resolve(__dirname, 'public')))
 
 
 // Routes and middlewares
-app.use('/api/login', loginRouter)
-app.use('/api/refresh', refreshRouter)
-app.use('/api/logout', logoutRouter)
+// v1 routes
+app.use('/api/v1/login', loginRouterV1)
+app.use('/api/v1/refresh', refreshRouterV1)
+app.use('/api/v1/logout', logoutRouterV1)
+
+// v2 routes
+app.use('/api/v2/login', loginRouterV2)
+app.use('/api/v2/logout', logoutRouterV2)
+app.use('/api/v2/refresh', refreshRouterV2)
 
 app.use(requestLogger)
 app.use(tokenExtractor)
 app.use(userExtractor)
 
-app.use('/api/users', usersRouter)
-app.use('/api/beer', beerRouter)
-app.use('/api/categories', categoriesRouter)
-app.use('/api/whisky', whiskyRouter)
-app.use('/api/whiskyareas', whiskyAreasRouter)
-app.use('/api/csv', whiskyCsvRouter)
-app.use('/api/openinghours', openingHoursRouter)
-app.use('/api/livemusic', liveMusicRouter)
+// v1 routes
+app.use('/api/v1/users', usersRouterV1)
+app.use('/api/v1/beer', beerRouterV1)
+app.use('/api/v1/categories', categoriesRouterV1)
+app.use('/api/v1/whisky', whiskyRouterV1)
+app.use('/api/v1/whiskyareas', whiskyAreasRouterV1)
+app.use('/api/v1/csv', whiskyCsvRouterV1)
+app.use('/api/v1/openinghours', openingHoursRouterV1)
+app.use('/api/v1/livemusic', liveMusicRouterV1)
+
+// Upcoming v2 routes
+app.use('/api/v2/users', usersRouterV2)
+app.use('/api/v2/beer', beerRouterV2)
+app.use('/api/v2/whisky', whiskyRouterV2)
+app.use('/api/v2/csv', whiskyCsvRouterV2)
+app.use('/api/v2/openinghours', openingHoursRouterV2)
+app.use('/api/v2/livemusic', liveEventsRouterV2)
 
 // Frontend Routes
 app.get('/', (req, res) => {

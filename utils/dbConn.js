@@ -1,6 +1,9 @@
 const mongoose = require('mongoose')
-const { MONGODB_URI, PORT } = require('./config')
-const app = require('../app')
+const mysql = require('mysql2')
+const { MONGODB_URI, PORT, SQL_CONNECTION } = require('./config')
+mongoose.set('strictQuery', false)
+
+const mySqlConnection = mysql.createConnection(SQL_CONNECTION)
 
 const connectDB = async () => {
   await mongoose.connect(MONGODB_URI, {
@@ -9,6 +12,14 @@ const connectDB = async () => {
     console.log('connected to MongoDB')
   }).catch((error) => {
     console.log('error connecting to MongoDB:', error.message)
+  })
+
+  mySqlConnection.connect((err) => {
+    if (err) {
+      console.log('error connecting to MySQL:', err.message)
+      return
+    }
+    console.log('connected to MySQL')
   })
 }
 
@@ -21,4 +32,4 @@ const listenApp = (app) => {
   })
 }
 
-module.exports = { connectDB, listenApp }
+module.exports = { connectDB, listenApp, mySqlConnection }
