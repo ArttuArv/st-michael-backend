@@ -24,7 +24,7 @@ beerRouter.get('/', (request, response) => {
   })
 })
 
-beerRouter.post('/', (request, response) => {
+beerRouter.post('/', async (request, response) => {
   const { name, style, country, category } = request.body
 
   if (!name || !style || !country || !category) {
@@ -38,15 +38,15 @@ beerRouter.post('/', (request, response) => {
     category,
   }
 
-  beerSql.createBeer(newBeer, (err, result) => {
-    if (err) {
-      return response.status(400).json({ error: 'beer not created', message: err.message })
-    }
-    response.status(201).json({ id: result.insertId, ...newBeer })
-  })
+  try {
+    const result = await beerSql.createBeer(newBeer)
+    response.status(201).json({ id: result.insertId, ...newBeer})
+  } catch (err) {
+    response.status(400).json({ error: 'beer not created', message: err.message })
+  }  
 })
 
-beerRouter.put('/:id', (request, response) => {
+beerRouter.put('/:id', async (request, response) => {
   const { name, style, country, category } = request.body
 
   if (!name || !style || !country || !category) {
@@ -61,12 +61,12 @@ beerRouter.put('/:id', (request, response) => {
     category,
   }
 
-  beerSql.updateBeer(beer, (err, result) => {
-    if (err) {
-      return response.status(400).json({ error: 'beer not updated', message: err.message })
-    }
-    response.status(201).json({ id: result.insertId, ...beer })
-  })
+  try {
+    const result = await beerSql.updateBeer(beer)
+    response.status(201).json({ id: result.insertId, ...beer})
+  } catch (err) {
+    response.status(400).json({ error: 'beer not updated', message: err.message })
+  }
 })
 
 beerRouter.delete('/:id', (request, response) => {

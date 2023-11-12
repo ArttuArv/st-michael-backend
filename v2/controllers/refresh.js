@@ -20,7 +20,7 @@ refreshRouter.get('/', async (request, response) => {
       try {
         foundUser = await userSql.getUserByUsername(decoded.username)
       } catch (err) {
-        response.status(400).json({ error: 'user not found', message: err.message });
+        response.status(400).json({ error: 'user not found', message: err.message }).end()
       }
 
       if (!foundUser) return response.status(401).send('UNAUTHORIZED')
@@ -28,7 +28,6 @@ refreshRouter.get('/', async (request, response) => {
       const accessToken = generateAccessToken(foundUser)
 
       response.status(200).send({ accessToken })
-
     }
   )
 })

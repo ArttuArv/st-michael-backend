@@ -2,6 +2,10 @@ const usersRouter = require('express').Router()
 const usersSql = require('../models/user')
 
 usersRouter.get('/', (request, response) => {
+
+  if (!request.user) 
+    return response.status(401).end()
+
   usersSql.getAllUsers((err, result) => {
     if (err) {
       return response.status(404).json({ error: err.message })
@@ -12,6 +16,9 @@ usersRouter.get('/', (request, response) => {
 
 usersRouter.post('/', async (request, response) => {
   const { username, password } = request.body
+
+  if (!request.user) 
+    return response.status(401).end()
 
   if (!username || !password) {
     return response.status(400).json({ error: 'content missing' })
@@ -24,7 +31,7 @@ usersRouter.post('/', async (request, response) => {
 
   try {
     const result = await usersSql.createUser(newUser);
-    response.status(201).json({ id: result.insertId, ...newUser });
+    response.status(201).json({ id: result.insertId, username: newUser.username });
   } catch (err) {
     response.status(400).json({ error: 'user not created', message: err.message });
   }
@@ -32,6 +39,9 @@ usersRouter.post('/', async (request, response) => {
 
 usersRouter.put('/:id', async (request, response) => {
   const { username, password } = request.body
+
+  if (!request.user) 
+    return response.status(401).end()
 
   if (!username || !password) {
     return response.status(400).json({ error: 'content missing' })
@@ -52,6 +62,10 @@ usersRouter.put('/:id', async (request, response) => {
 })
 
 usersRouter.delete('/:id', (request, response) => {
+
+  if (!request.user) 
+    return response.status(401).end()
+  
   usersSql.deleteUser(request.params.id, (err, result) => {
     if (err) {
       return response.status(400).json({ error: 'user not deleted', message: err.message })

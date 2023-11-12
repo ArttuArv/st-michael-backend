@@ -71,10 +71,10 @@ const deleteLiveEventQuery =
 
 // Opening Hours queries
 const getAllOpeningHoursQuery =
-  `SELECT openinghours_id AS id, day, opening_hours FROM openinghours`
+  `SELECT openinghours_id AS id, day, opening_hours AS openinghours FROM openinghours`
 
 const getOpeningHoursByIdQuery =
-  `SELECT openinghours_id AS id, day, opening_hours FROM openinghours WHERE openinghours_id = ?`
+  `SELECT openinghours_id AS id, day, opening_hours AS openinghours FROM openinghours WHERE openinghours_id = ?`
 
 const insertOpeningHoursQuery =
   `INSERT INTO openinghours (day, opening_hours)
@@ -108,6 +108,11 @@ const insertUserQuery =
 const updateUserQuery =
   `UPDATE users 
     SET username = ?, password = ?, refresh_token = ?
+    WHERE users_id = ?`
+
+const updateUserRefreshTokenQuery =
+  `UPDATE users 
+    SET refresh_token = ?
     WHERE users_id = ?`
 
 const deleteUserQuery =
@@ -148,4 +153,5 @@ module.exports = {
   deleteUserQuery,
   loginQuery,
   getUserByRefreshTokenQuery,
+  updateUserRefreshTokenQuery,
 }

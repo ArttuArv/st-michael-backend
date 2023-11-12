@@ -4,6 +4,7 @@ const csv = require('csvtojson')
 const multer = require('multer')
 const path = require('path')
 const fs = require('fs')
+const { sortIntoCategories } = require('../../utils/getRequestTransformers')
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -18,8 +19,11 @@ const upload = multer({ storage: storage })
 
 whiskyCsvRouter.post('/', upload.single('csvfile'), async (request, response) => {
 
+  // if (!request.user) 
+  //   return response.status(401).end()
+
   if (request.file?.path === undefined) {
-    return res.status(400).json({ error: 'No file selected' })
+    return response.status(400).json({ error: 'No file selected' })
   }
 
   const csvFile = request.file.path
@@ -30,20 +34,14 @@ whiskyCsvRouter.post('/', upload.single('csvfile'), async (request, response) =>
     try {
       const whiskyArray = await readCsvFile(csvFile)
       await insertWhiskyAreas(whiskyArray)
-      await insertWhiskiesIntoDatabase(whiskyArray)
-      response.status(200).send(whiskyArray)
-      fs.unlink(csvFile, (err) => {
-        if (err) {
-          console.log(err)
-        }
-        console.log('File deleted')
-      })
+      const savedWhiskys = await insertWhiskiesIntoDatabase(whiskyArray)
+      deleteFileFromDisk(csvFile)
+      response.status(201).json({ message: 'Whiskies added', whiskys: savedWhiskys }).end()
     } catch (error) {
-      console.log(error)
-      response.status(500).json({ error: error.message })
+      console.log('Errori:', error)
+      response.status(500).json({ error: error.message }).end()
     }
   }, 500)
- 
 })
 
 module.exports = whiskyCsvRouter
@@ -80,28 +78,47 @@ const truncateTables = () => {
 const insertWhiskyAreas = async (whiskyArray) => {
   const areas = whiskyArray.map(whisky => whisky.area)
   const uniqueAreas = [...new Set(areas)]
-  uniqueAreas.forEach(area => {
-    whiskyCsvSql.createWhiskyArea(area, (err, result) => {
-      if (err) {
-        console.log(err)
-      }
-      console.log(`Area ${area} inserted`)
-    })
+  const promises = uniqueAreas.map(async area => {
+    try {
+      await whiskyCsvSql.createWhiskyArea(area)
+    } catch (err) {
+      console.log(err)
+    }
   })
+  await Promise.all(promises)
 }
 
 const insertWhiskiesIntoDatabase = async (whiskiesByArea) => {
-  whiskiesByArea.forEach(whisky => {
+  const newWhiskys = []
+
+  await Promise.all(whiskiesByArea.map(async (whisky) => {
     const newWhisky = {
       name: whisky.name,
       area: whisky.area,
       price: whisky.price,
-    
     }
-    whiskyCsvSql.createWhisky(newWhisky, (err, result) => {
-      if (err) {
-        console.log(err)
-      }
-    })
+
+    try {
+      const result = await whiskyCsvSql.createWhisky(newWhisky)
+      newWhisky.whisky_id = result.insertId
+      newWhiskys.push(newWhisky)
+    } catch (err) {
+      console.log(err)
+    }
+  }))
+
+  return sortIntoCategories(newWhiskys)
+}
+
+function deleteFileFromDisk(csvFile) {
+  fs.unlink(csvFile, (err) => {
+    if (err) {
+      console.log(err)
+    }
+    console.log('File deleted')
   })
+}
+
+const getAllWhiskys = async () => {
+  return await whiskyCsvSql.getAllWhiskysCsv()
 }

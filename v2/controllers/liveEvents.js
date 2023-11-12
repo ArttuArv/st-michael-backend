@@ -13,6 +13,9 @@ liveEventsRouter.get('/', (request, response) => {
 liveEventsRouter.post('/', (request, response) => {
   const { name, date, time } = request.body
 
+  if (!request.user) 
+    return response.status(401).end()  
+
   if (!name || !date || !time) {
     return response.status(400).json({ error: 'content missing' })
   }
@@ -34,6 +37,13 @@ liveEventsRouter.post('/', (request, response) => {
 liveEventsRouter.put('/:id', (request, response) => {
   const { name, date, time } = request.body
 
+  if (!request.user) 
+    return response.status(401).end()  
+
+  if (!name || !date || !time) {
+    return response.status(400).json({ error: 'content missing' })
+  }
+
   const liveEvent = {
     id: request.params.id,
     name,
@@ -50,6 +60,10 @@ liveEventsRouter.put('/:id', (request, response) => {
 })
 
 liveEventsRouter.delete('/:id', (request, response) => {
+
+  if (!request.user) 
+    return response.status(401).end()  
+
   liveEventsSql.deleteLiveEvent(request.params.id, (err, result) => {
     if (err) {
       return response.status(400).json({ error: 'live event not deleted', message: err.message })

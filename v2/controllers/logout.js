@@ -28,13 +28,11 @@ logoutRouter.get('/', async (request, response) => {
 
   const updatedUser = {
     id: user.id,
-    username: user.username,
-    password: user.password,
     refreshToken: null,
   }
 
   // Save refresh token to database
-  await userSql.updateUser(updatedUser, (err, result) => {
+  await userSql.updateUserRefreshToken(updatedUser, (err, result) => {
     if (err) {
       return response.status(404).json({ error: err.message })
     }

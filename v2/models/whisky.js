@@ -13,28 +13,62 @@ const getAllWhiskys = (callback) => {
   return mySqlConnection.query(getAllWhiskysQuery, callback)
 }
 
-const createWhisky = async (whisky, callback) => {
-  mySqlConnection.query(insertWhiskyQuery, [whisky.area, whisky.name, whisky.price], (error, results) => {
-    if (error) {
-      return error.message.includes(`Column 'areas_id' cannot be null`)
-        ? callback(new Error(`Area with name '${whisky.area}' not found.`), null)
-        : callback(error, null);
-    } else {
-      callback(null, results);
+const getAllWhiskysCsv = async () => {
+  return new Promise((resolve, reject) => {
+    mySqlConnection.query(getAllWhiskysQuery, (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results);
+      }
     }
-  });
+  )})
 }
 
-const updateWhisky = (whisky, callback) => {
-  return mySqlConnection.query(updateWhiskyQuery, [whisky.area, whisky.name, whisky.price, whisky.id], callback)
+const createWhisky = async (whisky) => {
+  return new Promise((resolve, reject) => {
+    mySqlConnection.query(insertWhiskyQuery, [whisky.area, whisky.name, whisky.price], (error, results) => {
+      if (error) {
+        return error.message.includes(`Column 'areas_id' cannot be null`)
+          ? reject(new Error(`Area with name '${whisky.area}' not found.`))
+          : reject(error);
+      } else {
+        resolve(results);
+      }
+    }
+  )})
+}
+
+const updateWhisky = async (whisky) => {
+  return new Promise((resolve, reject) => {
+    mySqlConnection.query(updateWhiskyQuery, [whisky.area, whisky.name, whisky.price, whisky.id], (error, results) => {
+      if (error) {
+        return error.message.includes(`Column 'areas_id' cannot be null`)
+          ? reject(new Error(`Area with name '${whisky.area}' not found.`))
+          : reject(error);
+      } else {
+        resolve(results);
+      }
+    }
+  )})
 }
 
 const deleteWhisky = (id, callback) => {
   return mySqlConnection.query(deleteWhiskyQuery, [id], callback)
 }
 
-const createWhiskyArea = async (area, callback) => {
-  return mySqlConnection.query(insertWhiskyAreaQuery, [area], callback);
+const createWhiskyArea = async (area) => {
+  return new Promise((resolve, reject) => {
+    mySqlConnection.query(insertWhiskyAreaQuery, [area], (error, results) => {
+      if (error) {
+        return error.message.includes(`Duplicate entry`)
+          ? reject(new Error(`Area with name '${area}' already exists.`))
+          : reject(error);
+      } else {
+        resolve(results);
+      }
+    }
+  )})
 }
 
 const truncateWhiskyAndAreaTables = (callback) => {
@@ -55,4 +89,5 @@ module.exports = {
   getAllWhiskys,
   updateWhisky,
   deleteWhisky,
+  getAllWhiskysCsv,
 }

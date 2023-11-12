@@ -1,5 +1,6 @@
 const whiskyRouter = require('express').Router()
 const whiskyCsvSql = require('../models/whisky')
+const { sortIntoCategories } = require('../../utils/getRequestTransformers')
 
 whiskyRouter.get('/', (request, response) => {
   
@@ -12,11 +13,14 @@ whiskyRouter.get('/', (request, response) => {
   })
 })
 
-whiskyRouter.post('/', (request, response) => {
+whiskyRouter.post('/', async (request, response) => {
   const { name, area, price } = request.body
 
+  if (!request.user) 
+    return response.status(401).end()
+
   if (!name || !area) {
-    return response.status(400).json({ error: 'content missing' })
+    return response.status(400).json({ error: 'content missing' }).end()
   }
 
   const newWhisky = {
@@ -25,16 +29,19 @@ whiskyRouter.post('/', (request, response) => {
     price,
   }
 
-  whiskyCsvSql.createWhisky(newWhisky, (err, result) => {
-    if (err) {
-      return response.status(400).json({ error: 'whisky not created', message: err.message })
-    }
-    response.status(201).json({ id: result.insertId, ...newWhisky })
-  })
+  try {
+    const result = await whiskyCsvSql.createWhisky(newWhisky)
+    response.status(201).json({ id: result.insertId, ...newWhisky})
+  } catch (err) {
+    response.status(400).json({ error: 'whisky not created', message: err.message })
+  }
 })
 
-whiskyRouter.put('/:id', (request, response) => {
+whiskyRouter.put('/:id', async (request, response) => {
   const { name, area, price } = request.body
+
+  if (!request.user) 
+    return response.status(401).end()
 
   if (!name || !area) {
     return response.status(400).json({ error: 'content missing' })
@@ -47,15 +54,19 @@ whiskyRouter.put('/:id', (request, response) => {
     price,
   }
 
-  whiskyCsvSql.updateWhisky(whisky, (err, result) => {
-    if (err) {
-      return response.status(400).json({ error: 'whisky not updated', message: err.message })
-    }
-    response.status(201).json({ id: result.insertId, ...whisky })
-  })
+  try {
+    const result = await whiskyCsvSql.updateWhisky(whisky)
+    response.status(201).json({ id: result.insertId, ...whisky})
+  } catch (err) {
+    response.status(400).json({ error: 'whisky not updated', message: err.message })
+  }
 })
 
 whiskyRouter.delete('/:id', (request, response) => {  
+
+  if (!request.user) 
+    return response.status(401).end()
+
   whiskyCsvSql.deleteWhisky(request.params.id, (err, result) => {
     if (err) {
       return response.status(404).json({ error: 'whisky not found' })
@@ -66,51 +77,3 @@ whiskyRouter.delete('/:id', (request, response) => {
 
 
 module.exports = whiskyRouter
-
-const sortIntoCategories = (whiskys) => {
-  // Create an empty object to store the transformed result
-  const transformedResult = {};
-
-  // Iterate through the actual result array
-  whiskys.forEach((whisky) => {
-    // Extract relevant information
-    const { whisky_id, name, price, area, area_id } = whisky;
-
-    // Check if the area exists in the transformed result object
-    if (!transformedResult[area]) {
-      // If not, create a new entry for the area
-      transformedResult[area] = {
-        id: area_id,
-        area: area,
-        total: 0,
-        products: [],
-      };
-    }
-
-    // Add the beer details to the products array of the area
-    transformedResult[area].products.push({
-      id: whisky_id,
-      name: name,
-      price: price,
-      area: area,
-    });
-  });
-
-  // Convert the transformed result into an array
-  const transformedArray = Object.values(transformedResult);
-
-  // Sort the array by id
-  transformedArray.sort((a, b) => a.id - b.id);
-
-  // Sort the products array of each area by id
-  transformedArray.forEach((area) => {
-    area.products.sort((a, b) => a.id - b.id);
-  });
-
-  // add a total amount of products to each area
-  transformedArray.forEach((area) => {
-    area.total = area.products.length;
-  });
-
-  return transformedArray;
-};

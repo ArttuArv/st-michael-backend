@@ -10,7 +10,8 @@ beerRouter.post('/', async (request, response) => {
   const { name, style, country, price, category } = request.body
 
   if (!request.user) 
-    return response.status(401).end()  
+    return response.status(401).end() 
+   
   if (category === 'Seasonal Bottles' || category === 'Seasonal Draughts' 
     || category === 'Regular Bottles' || category === 'Regular Draughts') { 
     
