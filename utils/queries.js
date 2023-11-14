@@ -110,6 +110,11 @@ const updateUserQuery =
     SET username = ?, password = ?, refresh_token = ?
     WHERE users_id = ?`
 
+const updateUserPasswordQuery =
+  `UPDATE users 
+    SET password = ?
+    WHERE users_id = ?`
+
 const updateUserRefreshTokenQuery =
   `UPDATE users 
     SET refresh_token = ?
@@ -154,4 +159,5 @@ module.exports = {
   loginQuery,
   getUserByRefreshTokenQuery,
   updateUserRefreshTokenQuery,
+  updateUserPasswordQuery,
 }

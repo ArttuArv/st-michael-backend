@@ -11,15 +11,15 @@ const getAllLiveEvents = (callback) => {
 }
 
 const createLiveEvent = (liveEvent, callback) => {
-  return mySqlConnection.query(insertLiveEventQuery, [liveEvent.name, liveEvent.date, liveEvent.time], callback)
+  return mySqlConnection.execute(insertLiveEventQuery, [liveEvent.name, liveEvent.date, liveEvent.time], callback)
 }
 
 const updateLiveEvent = (liveEvent, callback) => {
-  return mySqlConnection.query(updateLiveEventQuery, [liveEvent.name, liveEvent.date, liveEvent.time, liveEvent.id], callback)
+  return mySqlConnection.execute(updateLiveEventQuery, [liveEvent.name, liveEvent.date, liveEvent.time, liveEvent.id], callback)
 }
 
 const deleteLiveEvent = (id, callback) => {
-  return mySqlConnection.query(deleteLiveEventQuery, [id], callback)
+  return mySqlConnection.execute(deleteLiveEventQuery, [id], callback)
 }
 
 module.exports = {

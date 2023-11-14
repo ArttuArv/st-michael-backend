@@ -3,7 +3,17 @@ const mysql = require('mysql2')
 const { MONGODB_URI, PORT, SQL_CONNECTION } = require('./config')
 mongoose.set('strictQuery', false)
 
-const mySqlConnection = mysql.createConnection(SQL_CONNECTION)
+const pool = {
+  ...SQL_CONNECTION,
+  waitForConnections: true,
+  connectionLimit: 5,
+  idleTimeout: 120000,
+  queueLimit: 0,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 30000,
+}
+
+const mySqlConnection = mysql.createPool(pool)
 
 const connectDB = async () => {
   await mongoose.connect(MONGODB_URI, {
@@ -14,13 +24,8 @@ const connectDB = async () => {
     console.log('error connecting to MongoDB:', error.message)
   })
 
-  mySqlConnection.connect((err) => {
-    if (err) {
-      console.log('error connecting to MySQL:', err.message)
-      return
-    }
-    console.log('connected to MySQL')
-  })
+  mysql.createPool(pool)
+  console.log('connected to MySQL')
 }
 
 const listenApp = (app) => {

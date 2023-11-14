@@ -8,6 +8,7 @@ const {
   getUserByUsernameQuery,
   getUserByRefreshTokenQuery,
   updateUserRefreshTokenQuery,
+  updateUserPasswordQuery,
 } = require('../../utils/queries')
 const bcrypt = require('bcrypt')
 
@@ -16,12 +17,12 @@ const getAllUsers = (callback) => {
 }
 
 const getUserById = (id, callback) => {
-  return mySqlConnection.query(getUserByIdQuery, [id], callback)
+  return mySqlConnection.execute(getUserByIdQuery, [id], callback)
 }
 
 const getUserByUsername = (username) => {
   return new Promise((resolve, reject) => {
-    mySqlConnection.query(getUserByUsernameQuery, [username], (err, result) => {
+    mySqlConnection.execute(getUserByUsernameQuery, [username], (err, result) => {
       if (err) {
         reject(err)
       } else {
@@ -33,7 +34,7 @@ const getUserByUsername = (username) => {
 
 const getUserByRefreshToken = (refreshToken) => {
   return new Promise((resolve, reject) => {
-    mySqlConnection.query(getUserByRefreshTokenQuery, [refreshToken], (err, result) => {
+    mySqlConnection.execute(getUserByRefreshTokenQuery, [refreshToken], (err, result) => {
       if (err) {
         reject(err)
       } else {
@@ -51,7 +52,7 @@ const createUser = async (user) => {
       if (err) {
         reject(err)
       } else {
-        mySqlConnection.query(insertUserQuery, [user.username, passwordHash], (err, result) => {
+        mySqlConnection.execute(insertUserQuery, [user.username, passwordHash], (err, result) => {
           if (err) {
             reject(err)
           } else {
@@ -67,16 +68,29 @@ const updateUser = async (user, callback) => {
   return new Promise((resolve, reject) => {
     const saltRounds = 10
 
-    bcrypt.hash(user.password, saltRounds, (err, passwordHash) => {
+    mySqlConnection.execute(getUserByUsernameQuery, [user.username], (err, result) => {
       if (err) {
         reject(err)
       } else {
-        mySqlConnection.query(updateUserQuery, [user.username, passwordHash, user.refreshToken, user.id], (err, result) => {
+        const userFound = result[0]
+
+        user = {
+          ...user,
+          id: userFound.id,
+        }
+
+        bcrypt.hash(user.password, saltRounds, (err, passwordHash) => {
           if (err) {
             reject(err)
           } else {
-            resolve(result)
-          }    
+            mySqlConnection.execute(updateUserPasswordQuery, [passwordHash, user.id], (err, result) => {
+              if (err) {
+                reject(err)
+              } else {
+                resolve(result)
+              }    
+            })
+          }
         })
       }
     })
@@ -85,7 +99,7 @@ const updateUser = async (user, callback) => {
 
 const updateUserRefreshToken = async (user) => {
   return new Promise((resolve, reject) => {
-    mySqlConnection.query(updateUserRefreshTokenQuery, [user.refreshToken, user.id], (err, result) => {
+    mySqlConnection.execute(updateUserRefreshTokenQuery, [user.refreshToken, user.id], (err, result) => {
       if (err) {
         reject(err)
       } else {
@@ -96,7 +110,7 @@ const updateUserRefreshToken = async (user) => {
 }
 
 const deleteUser = (id, callback) => {
-  return mySqlConnection.query(deleteUserQuery, [id], callback)
+  return mySqlConnection.execute(deleteUserQuery, [id], callback)
 }
 
 module.exports = {

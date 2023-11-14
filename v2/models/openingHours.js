@@ -11,15 +11,15 @@ const getAllOpeningHours = (callback) => {
 }
 
 const createOpeningHours = (openingHours, callback) => {
-  return mySqlConnection.query(insertOpeningHoursQuery, [openingHours.day, openingHours.openinghours], callback)
+  return mySqlConnection.execute(insertOpeningHoursQuery, [openingHours.day, openingHours.openinghours], callback)
 }
 
 const updateOpeningHours = (openingHours, callback) => {
-  return mySqlConnection.query(updateOpeningHoursQuery, [openingHours.day, openingHours.openinghours, openingHours.id], callback)
+  return mySqlConnection.execute(updateOpeningHoursQuery, [openingHours.day, openingHours.openinghours, openingHours.id], callback)
 }
 
 const deleteOpeningHours = (id, callback) => {
-  return mySqlConnection.query(deleteOpeningHoursQuery, [id], callback)
+  return mySqlConnection.execute(deleteOpeningHoursQuery, [id], callback)
 }
 
 module.exports = {

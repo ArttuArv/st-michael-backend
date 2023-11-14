@@ -30,14 +30,14 @@ usersRouter.post('/', async (request, response) => {
   }
 
   try {
-    const result = await usersSql.createUser(newUser);
-    response.status(201).json({ id: result.insertId, username: newUser.username });
+    const result = await usersSql.createUser(newUser)
+    response.status(201).json({ id: result.insertId, username: newUser.username })
   } catch (err) {
-    response.status(400).json({ error: 'user not created', message: err.message });
+    response.status(400).json({ error: 'user not created', message: err.message })
   }
 })
 
-usersRouter.put('/:id', async (request, response) => {
+usersRouter.put('/', async (request, response) => {
   const { username, password } = request.body
 
   if (!request.user) 
@@ -48,16 +48,15 @@ usersRouter.put('/:id', async (request, response) => {
   }
 
   const user = {
-    id: request.params.id,
     username,
     password,
   }
 
   try {
-    const result = await usersSql.updateUser(user);
-    response.status(201).json({ id: result.insertId, ...user });
+    await usersSql.updateUser(user)
+    response.status(201).end()
   } catch (err) {
-    response.status(400).json({ error: 'user not updated', message: err.message });
+    response.status(400).json({ error: 'user not updated', message: err.message })
   }
 })
 
