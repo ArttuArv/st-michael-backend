@@ -20,93 +20,43 @@ const getUserById = (id, callback) => {
   return mySqlConnection.execute(getUserByIdQuery, [id], callback)
 }
 
-const getUserByUsername = (username) => {
-  return new Promise((resolve, reject) => {
-    mySqlConnection.execute(getUserByUsernameQuery, [username], (err, result) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(result[0])
-      }
-    })
-  })
+const getUserByUsername = async (username) => {
+  const promisePool = mySqlConnection.promise()
+  const [rows, fields] = await promisePool.execute(getUserByUsernameQuery, [username])
+  return rows[0]
 }
 
-const getUserByRefreshToken = (refreshToken) => {
-  return new Promise((resolve, reject) => {
-    mySqlConnection.execute(getUserByRefreshTokenQuery, [refreshToken], (err, result) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(result[0])
-      }
-    })
-  })
+const getUserByRefreshToken = async (refreshToken) => {
+  const promisePool = mySqlConnection.promise()
+  const [rows, fields] = await promisePool.execute(getUserByRefreshTokenQuery, [refreshToken])
+  return rows[0]
+
 }
 
 const createUser = async (user) => {
-  return new Promise((resolve, reject) => {
-    const saltRounds = 10
-
-    bcrypt.hash(user.password, saltRounds, (err, passwordHash) => {
-      if (err) {
-        reject(err)
-      } else {
-        mySqlConnection.execute(insertUserQuery, [user.username, passwordHash], (err, result) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(result)
-          }
-        })
-      }
-    })
-  })
+  const saltRounds = 10
+  const hashedPassword = await bcrypt.hash(user.password, saltRounds)
+  const promisePool = mySqlConnection.promise()
+  const [rows, fields] = await promisePool.execute(insertUserQuery, [user.username, hashedPassword])
+  return rows
 }
 
-const updateUser = async (user, callback) => {
-  return new Promise((resolve, reject) => {
-    const saltRounds = 10
+const updateUser = async (user) => {
+  const promisePool = mySqlConnection.promise()
+  const saltRounds = 10
+  const hashedPassword = await bcrypt.hash(user.password, saltRounds)
+  
+  const [selectRows, selectFields] = await promisePool.execute(getUserByUsernameQuery, [user.username])
+  const userFound = selectRows[0]
+  const [rows, fields] = await promisePool.execute(updateUserPasswordQuery, [hashedPassword, userFound.id])
+  return rows
 
-    mySqlConnection.execute(getUserByUsernameQuery, [user.username], (err, result) => {
-      if (err) {
-        reject(err)
-      } else {
-        const userFound = result[0]
-
-        user = {
-          ...user,
-          id: userFound.id,
-        }
-
-        bcrypt.hash(user.password, saltRounds, (err, passwordHash) => {
-          if (err) {
-            reject(err)
-          } else {
-            mySqlConnection.execute(updateUserPasswordQuery, [passwordHash, user.id], (err, result) => {
-              if (err) {
-                reject(err)
-              } else {
-                resolve(result)
-              }    
-            })
-          }
-        })
-      }
-    })
-  })  
 }
 
 const updateUserRefreshToken = async (user) => {
-  return new Promise((resolve, reject) => {
-    mySqlConnection.execute(updateUserRefreshTokenQuery, [user.refreshToken, user.id], (err, result) => {
-      if (err) {
-        reject(err)
-      } else {
-        resolve(result)
-      }    
-    })
-  })
+  const promisePool = mySqlConnection.promise()
+  const [rows, fields] = await promisePool.execute(updateUserRefreshTokenQuery, [user.refreshToken, user.id])
+  return rows
 }
 
 const deleteUser = (id, callback) => {

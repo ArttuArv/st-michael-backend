@@ -8,13 +8,8 @@ logoutRouter.get('/', async (request, response) => {
     return response.status(404).send({ message: 'no refresh token' })
 
   const refreshToken = cookies.refreshToken
-  let user = null
 
-  try {
-    user = await userSql.getUserByRefreshToken(refreshToken)
-  } catch (err) {
-    response.status(400).json({ error: 'user not found', message: err.message });
-  }
+  const user = await userSql.getUserByRefreshToken(refreshToken)
 
   if (!user) {
     response.clearCookie('refreshToken', { 
@@ -32,12 +27,7 @@ logoutRouter.get('/', async (request, response) => {
   }
 
   // Save refresh token to database
-  await userSql.updateUserRefreshToken(updatedUser, (err, result) => {
-    if (err) {
-      return response.status(404).json({ error: err.message })
-    }
-    return result
-  })
+  await userSql.updateUserRefreshToken(updatedUser)
 
   response.clearCookie('refreshToken', { 
     httpOnly: true, 

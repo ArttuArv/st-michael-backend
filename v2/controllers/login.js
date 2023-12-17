@@ -5,16 +5,15 @@ const { generateAccessToken, generateRefreshToken } = require('../../utils/middl
 
 loginRouter.post('/', async (request, response) => {
   const { username, password } = request.body
-  let user = null
 
   if (!username || !password) {
     return response.status(400).json({ error: 'content missing' })
   }
 
-  try {
-    user = await userSql.getUserByUsername(username)
-  } catch (err) {
-    response.status(400).json({ error: 'user not found', message: err.message });
+  const user = await userSql.getUserByUsername(username)
+
+  if (!user) {
+    return response.status(400).json({ error: 'user not found' })
   }
 
   const passwordCorrect = user === null

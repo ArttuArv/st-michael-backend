@@ -16,31 +16,15 @@ const getBeers = (callback) => {
 }
 
 const createBeer = async (newBeer) => {
-  return new Promise((resolve, reject) => {
-    mySqlConnection.execute(insertBeerQuery, [newBeer.category, newBeer.name, newBeer.style, newBeer.country], (error, results) => {
-      if (error) {
-        return error.message.includes(`Column 'category_id' cannot be null`)
-          ? reject(new Error(`Category with name '${newBeer.category}' not found.`))
-          : reject(error);
-      } else {
-        resolve(results);
-      }
-    }
-  )})
+  const promisePool = mySqlConnection.promise();
+  const [row, fields] = await promisePool.execute(insertBeerQuery, [newBeer.category, newBeer.name, newBeer.style, newBeer.country])
+  return row
 }
 
 const updateBeer = async (updatedBeer) => {
-  return new Promise((resolve, reject) => {
-    mySqlConnection.execute(updateBeerQuery, [updatedBeer.category, updatedBeer.name, updatedBeer.style, updatedBeer.country, updatedBeer.id], (error, results) => {
-      if (error) {
-        return error.message.includes(`Column 'category_id' cannot be null`)
-          ? reject(new Error(`Category with name '${updatedBeer.category}' not found.`))
-          : reject(error);
-      } else {
-        resolve(results);
-      }
-    }
-  )})
+  const promisePool = mySqlConnection.promise();
+  const [row, fields] = await promisePool.execute(updateBeerQuery, [updatedBeer.category, updatedBeer.name, updatedBeer.style, updatedBeer.country, updatedBeer.id])
+  return row
 }
 
 const deleteBeer = (id, callback) => {  

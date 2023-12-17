@@ -27,6 +27,9 @@ beerRouter.get('/', (request, response) => {
 beerRouter.post('/', async (request, response) => {
   const { name, style, country, category } = request.body
 
+  // if (!request.user) 
+  //   return response.status(401).end()  
+
   if (!name || !style || !country || !category) {
     return response.status(400).json({ error: 'content missing' })
   }
@@ -42,12 +45,20 @@ beerRouter.post('/', async (request, response) => {
     const result = await beerSql.createBeer(newBeer)
     response.status(201).json({ id: result.insertId, ...newBeer})
   } catch (err) {
-    response.status(400).json({ error: 'beer not created', message: err.message })
-  }  
+    response.status(400).json({ 
+      error: 'beer not created', 
+      message: err.message === `Column 'category_id' cannot be null`
+        ? `Category '${category}' not found`
+        : err.message
+    })
+  }
 })
 
 beerRouter.put('/:id', async (request, response) => {
   const { name, style, country, category } = request.body
+
+  // if (!request.user) 
+  //   return response.status(401).end()  
 
   if (!name || !style || !country || !category) {
     return response.status(400).json({ error: 'content missing' })
@@ -65,11 +76,19 @@ beerRouter.put('/:id', async (request, response) => {
     const result = await beerSql.updateBeer(beer)
     response.status(201).json({ id: result.insertId, ...beer})
   } catch (err) {
-    response.status(400).json({ error: 'beer not updated', message: err.message })
+    response.status(400).json({ 
+      error: 'beer not created', 
+      message: err.message === `Column 'category_id' cannot be null`
+        ? `Category '${category}' not found`
+        : err.message
+    })
   }
 })
 
 beerRouter.delete('/:id', (request, response) => {
+  if (!request.user) 
+    return response.status(401).end()  
+
   beerSql.deleteBeer(request.params.id, (err, result) => {
     if (err) {
       return response.status(404).json({ error: err.message })

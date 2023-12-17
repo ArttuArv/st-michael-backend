@@ -82,7 +82,7 @@ const insertOpeningHoursQuery =
 
 const updateOpeningHoursQuery =
   `UPDATE openinghours 
-    SET day = ?, openinghours = ?
+    SET day = ?, opening_hours = ?
     WHERE openinghours_id = ?`
 
 const deleteOpeningHoursQuery =
