@@ -53,9 +53,9 @@ connectDB()
 // app.use(cors(corrsOptions))
 
 // Prod
-app.use(cors({
-  origin: './build',
-}))
+// app.use(cors({
+//   origin: './build',
+// }))
 
 app.use(express.json())
 app.use(cookieParser())
@@ -88,7 +88,7 @@ app.use('/api/v1/csv', whiskyCsvRouterV1)
 app.use('/api/v1/openinghours', openingHoursRouterV1)
 app.use('/api/v1/livemusic', liveMusicRouterV1)
 
-// Upcoming v2 routes
+// v2 routes
 app.use('/api/v2/users', usersRouterV2)
 app.use('/api/v2/beer', beerRouterV2)
 app.use('/api/v2/whisky', whiskyRouterV2)
@@ -121,11 +121,6 @@ app.get('/sports', (req, res) => {
 app.get('*', (req, res) => {
   frontSendFile(req, res)
 })
-
-if (process.env.NODE_ENV === 'test') {
-  const testingRouter = require('./controllers/testing')
-  app.use('/api/testing', testingRouter)
-}
 
 app.use(unknownEndpoint)
 app.use(errorHandler)

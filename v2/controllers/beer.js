@@ -27,8 +27,8 @@ beerRouter.get('/', (request, response) => {
 beerRouter.post('/', async (request, response) => {
   const { name, style, country, category } = request.body
 
-  // if (!request.user) 
-  //   return response.status(401).end()  
+  if (!request.user) 
+    return response.status(401).end()  
 
   if (!name || !style || !country || !category) {
     return response.status(400).json({ error: 'content missing' })
@@ -57,8 +57,8 @@ beerRouter.post('/', async (request, response) => {
 beerRouter.put('/:id', async (request, response) => {
   const { name, style, country, category } = request.body
 
-  // if (!request.user) 
-  //   return response.status(401).end()  
+  if (!request.user) 
+    return response.status(401).end()  
 
   if (!name || !style || !country || !category) {
     return response.status(400).json({ error: 'content missing' })

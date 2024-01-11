@@ -13,7 +13,7 @@ loginRouter.post('/', async (request, response) => {
   const user = await userSql.getUserByUsername(username)
 
   if (!user) {
-    return response.status(400).json({ error: 'user not found' })
+    return response.status(401).end()
   }
 
   const passwordCorrect = user === null
