@@ -47,7 +47,7 @@ const errorHandler = (error, request, response, next) => {
 const generateAccessToken = (user) => {
   const userForToken = {
     username: user.username,
-    id: user._id,
+    id: user._id || user.id,
   }
 
   return jwt.sign(
